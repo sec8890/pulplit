@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Experiment 8109 — Voronoi Kaleidoscope + Plain Metal Plate</title>
+<style>
+  /* Background */
+  html, body { height:100%; margin:0; background:#05060a; color:#0c0f13; }
+  canvas { position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0; }
+  #gifSource { position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; pointer-events:none; user-select:none; -webkit-user-drag:none; }
+
+  /* Dim vignette over the kaleidoscope */
+  .vignette {
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:
+      radial-gradient(1200px 900px at 50% 46%, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 58%, rgba(0,0,0,.9) 100%),
+      linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.18));
+    mix-blend-mode:multiply;
+  }
+
+  /* Center the plate */
+  .wrap { position:relative; z-index:2; width:100%; height:100%; display:grid; place-items:center; }
+
+  /* ===== Plain Metal Plate ===== */
+  .plate {
+    width:min(620px, 86vw);
+    border-radius:10px;
+    padding:16px 18px;
+    background:
+      /* soft top-to-bottom metal gradient */
+      linear-gradient(180deg, #d9dfe5 0%, #c2c9d1 48%, #a8b0b9 100%);
+    /* subtle inner and outer edges for milled look */
+    box-shadow:
+      0 28px 90px rgba(0,0,0,.85),
+      inset 0 1px 0 rgba(255,255,255,.85),
+      inset 0 -1px 0 rgba(0,0,0,.40);
+    position:relative;
+    transform-style:preserve-3d;
+  }
+
+  /* Brushed texture + faint vertical banding */
+  .plate::before {
+    content:""; position:absolute; inset:0; border-radius:10px; pointer-events:none;
+    background:
+      /* hairline brush grain */
+      repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 0.8px, rgba(255,255,255,.06) 0.8px 1.6px),
+      /* wide banding to sell the steel */
+      linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,0) 22%, rgba(0,0,0,.05) 60%, rgba(255,255,255,.10) 100%);
+    mix-blend-mode:overlay; opacity:.25;
+  }
+
+  /* Engraved text area (no extra frame) */
+  .engrave {
+    background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.12) 40%, rgba(0,0,0,.20) 100%);
+    border-radius:6px;
+    padding: clamp(12px, 1.8vw, 16px);
+    color:#0e1115;
+    font: 13.5px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    max-height:min(60vh, 560px);
+    overflow:auto;
+    text-shadow: 0 1px 0 rgba(255,255,255,.9);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.85), inset 0 -1px 0 rgba(0,0,0,.22);
+  }
+  .meta {
+    display:flex; justify-content:space-between; align-items:center;
+    font: 10px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    letter-spacing:.28em; text-transform:uppercase; color:#1b222a; opacity:.7; margin: 0 0 10px;
+  }
+  .title {
+    font: 700 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    letter-spacing:.24em; text-transform:uppercase; color:#11151a;
+  }
+.engrave p { 
+  margin: 0 0 1em; 
+}
+
+.byline {
+  font-size: 1.6em;
+  font-weight: 600;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.subline {
+  font-size: 1.1em;
+  font-style: italic;
+  opacity: 0.8;
+  margin-top: -0.2em; /* moves it right under "Anonymous" */
+}
+
+
+  /* Subtle tilt on hover for clinical, hard feel (optional) */
+  .plate[data-tilt="1"]{ transform: rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)); transition: transform .22s ease; }
+
+  @media (max-height:700px){ .engrave{max-height:52vh} }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<img id="gifSource" src="goo.gif" alt="" />
+<div class="vignette" aria-hidden="true"></div>
+
+<div class="wrap">
+  <section class="plate" id="plate" data-tilt="1" aria-label="Plain brushed metal plate with engraved story">
+    <div class="meta">
+      <span class="title">Experiment 8109</span>
+      <span>Plate A</span>
+    </div>
+    <div class="engrave" role="document" aria-label="Engraved text">
+      <p class="byline"><strong>Anonymous</strong></p>
+      <p class="subline"><strong>Serora Ramolefhe</strong></p>
+
+      <p>It was another Tuesday morning where the sky cracked open with unrelenting thunder and an unforgiving chill hung in the atmosphere. A simple two-hour gig, another green dollar bill to be stashed underneath my hollow, fluffy pillow on the ground. A quick procedure lulled by anaesthesia, a prick of a thorn at best, they said.</p>
+
+      <p>The green rays of the scanner greeted me at the entrance of the fifteen-storey giant building resting atop a hill. A reflection of the glistening steel was visible from within the car, and a high-pitched frequency tore through my eardrums. An ivory and metal robot superfluously handed a pair of silk earplugs that felt as soft as fresh cotton.  A zig-zag line of electric robots worked fervently in picking every last spec of dust on the floor, with the hum and clacking echoing along the eerily vacant halls. The rancid and strong smell of sulphur rushed into my nose and burned as it trickled down my throat.</p>
+
+      <p><em>Experiment 8109.</em></p>
+
+      <p>One room was a carbon copy of the next. Rectangular, sharp edges, a shadow of death and hauntedness hovering over the space. The weight of my legs grew heavier with each footstep, and my breath became more shallow. A guiding hand led me to the room as I could feel the acidic burn of bile rising up from within me. In the centre of the room was an operating table illuminated by the harsh fluorescent lighting, with scalpels, knives, and forceps pregnant with danger. My heartbeat thrummed across my chest like racing wildebeests across the savannah plains. The pale face of the doctor with thick creased lines began to contort into hues of purple and black. Dark knuckles began to emerge from his neck and his teeth warped and twisted into grey eyeballs that ebbed with yellow liquid. A sinister twinkle shone in his eyes before they shifted into glass and fell from the sockets like overripe fruit dangling from a tree.</p>
+
+      <p>Darkness as deep as the galaxy engulfed me as I felt like planks of wood had been placed on my eyelids. A kaleidoscope of colours followed, with my brain seeming to shake like the earth during a tremor. Its tepid tentacles wrapped around my uterus, and I could feel it suckling down at my organs. The growth was starting to siphon my energy, and my days were accompanied by the room shaking and dark crimson hair sprouting from my roots. My mind rang with the memory of bones snapping like dried twigs under the heels of a combat boot.</p>
+
+      <p>The weeks bled into each other in an indecipherable stretch of time under the omniscient gaze of the electric camera. My body remained hooked and attached to strings and lines of medicine as my abdomen expanded each day, a violent reminder of what atrocity I harboured inside of me. I watched the robots wave past the room, no clock nor sun to track the hours.</p>
+
+      <p><strong>Young woman, 21, homeless, Brooklyn, no one was coming.</strong></p>
+
+      <p><em>Where was I? Who was I?</em></p>
+
+      <p><em>Experiment 8109.</em></p>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  /* ---------- Voronoi Kaleidoscope (same core) ---------- */
+  const SEED_COUNT = 24;
+  const MIRROR_MODE = 'alt';   // 'alt' | 'x' | 'y' | 'none'
+  const EDGE_ALPHA = 0.12;
+  const SEED_SPEED = 12;       // px/sec
+  const RELAX_EVERY = 120;     // frames (0 = never)
+
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d', { alpha:false });
+  const img = document.getElementById('gifSource');
+  let DPR = 1, W=0, H=0, t0 = performance.now(), frame = 0;
+
+  function resize() {
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = canvas.width  = Math.floor(innerWidth * DPR);
+    H = canvas.height = Math.floor(innerHeight * DPR);
+    canvas.style.width  = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(DPR, DPR);
+  }
+  addEventListener('resize', resize, {passive:true}); resize();
+
+  function clipPolyWithHalfPlane(poly, nx, ny, px, py) {
+    const out = [];
+    for (let i=0, j=poly.length-1; i<poly.length; j=i, i++) {
+      const ax = poly[j].x, ay = poly[j].y;
+      const bx = poly[i].x, by = poly[i].y;
+      const da = (ax - px)*nx + (ay - py)*ny;
+      const db = (bx - px)*nx + (by - py)*ny;
+      const aIn = da >= 0, bIn = db >= 0;
+      if (aIn && bIn) out.push({x:bx,y:by});
+      else if (aIn && !bIn) {
+        const t = da / (da - db);
+        out.push({x: ax + (bx-ax)*t, y: ay + (by-ay)*t});
+      } else if (!aIn && bIn) {
+        const t = da / (da - db);
+        out.push({x: ax + (bx-ax)*t, y: ay + (by-ay)*t});
+        out.push({x:bx,y:by});
+      }
+    }
+    return out;
+  }
+
+  function voronoiCells(sites, bounds) {
+    const {x:bx, y:by, w:bw, h:bh} = bounds;
+    const cells = new Array(sites.length);
+    for (let i=0; i<sites.length; i++) {
+      let poly = [
+        {x:bx,   y:by},
+        {x:bx+bw,y:by},
+        {x:bx+bw,y:by+bh},
+        {x:bx,   y:by+bh},
+      ];
+      const si = sites[i];
+      for (let j=0; j<sites.length; j++) if (j!==i) {
+        const sj = sites[j];
+        const nx = sj.x - si.x, ny = sj.y - si.y;
+        const midx = (si.x + sj.x)*0.5, midy = (si.y + sj.y)*0.5;
+        poly = clipPolyWithHalfPlane(poly, nx, ny, midx, midy);
+        if (!poly.length) break;
+      }
+      cells[i] = poly;
+    }
+    return cells;
+  }
+
+  function centroid(poly) {
+    let a = 0, cx = 0, cy = 0;
+    for (let i=0,j=poly.length-1; i<poly.length; j=i, i++) {
+      const p = poly[j], q = poly[i];
+      const f = p.x*q.y - q.x*p.y;
+      a += f; cx += (p.x + q.x)*f; cy += (p.y + q.y)*f;
+    }
+    if (a === 0) {
+      let sx=0, sy=0; for (const p of poly){ sx+=p.x; sy+=p.y; }
+      return {x:sx/poly.length, y:sy/poly.length};
+    }
+    a *= 0.5; const k = 1/(6*a);
+    return {x:cx*k, y:cy*k};
+  }
+
+  function maxRadius(poly, c) {
+    let m = 0; for (const p of poly){ const d = Math.hypot(p.x-c.x, p.y-c.y); if (d>m) m=d; }
+    return m;
+  }
+
+  const sites = [];
+  for (let i=0; i<SEED_COUNT; i++) {
+    sites.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+                 vx: (Math.random()*2-1), vy: (Math.random()*2-1) });
+  }
+
+  function updateSites(dt) {
+    const s = SEED_SPEED;
+    for (const p of sites) {
+      p.x += p.vx * s * dt; p.y += p.vy * s * dt;
+      if (p.x < 0 && p.vx < 0) p.vx *= -1;
+      if (p.x > innerWidth && p.vx > 0) p.vx *= -1;
+      if (p.y < 0 && p.vy < 0) p.vy *= -1;
+      if (p.y > innerHeight && p.vy > 0) p.vy *= -1;
+    }
+  }
+
+  function mildRelax(cells) {
+    for (let i=0; i<sites.length; i++) {
+      const poly = cells[i]; if (!poly || poly.length<3) continue;
+      const c = centroid(poly);
+      sites[i].x = sites[i].x*0.8 + c.x*0.2;
+      sites[i].y = sites[i].y*0.8 + c.y*0.2;
+    }
+  }
+
+  function draw() {
+    // fallback gradient while GIF dims not ready
+    const g = ctx.createRadialGradient(innerWidth*0.5, innerHeight*0.5, 10,
+                                       innerWidth*0.5, innerHeight*0.5, Math.max(innerWidth, innerHeight)*0.7);
+    g.addColorStop(0,'#1b0711'); g.addColorStop(1,'#05060a');
+    ctx.fillStyle = g; ctx.fillRect(0,0,innerWidth,innerHeight);
+
+    const iw = img.naturalWidth||0, ih = img.naturalHeight||0;
+    if (!iw || !ih) return;
+
+    const bounds = {x:0, y:0, w:innerWidth, h:innerHeight};
+    const cells = voronoiCells(sites, bounds);
+    const t = (performance.now() - t0) / 1000;
+
+    for (let i=0; i<cells.length; i++) {
+      const poly = cells[i]; if (!poly || poly.length<3) continue;
+      const c = centroid(poly);
+      const r = maxRadius(poly, c);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(poly[0].x, poly[0].y);
+      for (let k=1; k<poly.length; k++) ctx.lineTo(poly[k].x, poly[k].y);
+      ctx.closePath();
+      ctx.clip();
+
+      ctx.translate(c.x, c.y);
+      ctx.rotate(0.05 * Math.sin(t*0.6 + i*0.7));
+
+      if (MIRROR_MODE === 'alt') { if (i%2) ctx.scale(-1,1); }
+      else if (MIRROR_MODE === 'x') ctx.scale(-1,1);
+      else if (MIRROR_MODE === 'y') ctx.scale(1,-1);
+
+      const scale = Math.max((r*2)/iw, (r*2)/ih) * 1.15;
+      const w = iw * scale, h = ih * scale;
+      const ox = (Math.sin(t*0.3 + i) * 0.25 + 0.5) * (iw*0.2);
+      const oy = (Math.cos(t*0.35 + i*0.8) * 0.25 + 0.5) * (ih*0.2);
+      ctx.drawImage(img, -w*0.5 - ox*scale, -h*0.5 - oy*scale, w, h);
+
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.strokeStyle = `rgba(0,0,0,${EDGE_ALPHA})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(poly[0].x - c.x, poly[0].y - c.y);
+      for (let k=1; k<poly.length; k++) ctx.lineTo(poly[k].x - c.x, poly[k].y - c.y);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    if (RELAX_EVERY && (frame % RELAX_EVERY === 0)) mildRelax(cells);
+  }
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.05, (now - last)/1000);
+    last = now; frame++;
+    updateSites(dt);
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    draw();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* Plate tilt (optional) */
+  const plate = document.getElementById('plate');
+  function handlePointer(ev){
+    const r = plate.getBoundingClientRect();
+    const x = (ev.clientX - r.left) / r.width;
+    const y = (ev.clientY - r.top) / r.height;
+    plate.style.setProperty('--ry', ((x-0.5) * 6) + 'deg');
+    plate.style.setProperty('--rx', (-(y-0.5) * 4) + 'deg');
+  }
+  addEventListener('mousemove', handlePointer, {passive:true});
+  addEventListener('touchmove', e=>{ if(e.touches[0]) handlePointer(e.touches[0]); }, {passive:true});
+})();
+</script>
+</body>
+</html>
