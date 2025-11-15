@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Iridescent Goo + Theatre of Smallness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: #d8ecff; /* pale light blue */
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    color: #132033;
+  }
+
+  canvas {
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    z-index:0;
+  }
+
+  /* Text content layered above the goo (no box, no container styling) */
+  .content {
+    position:relative;
+    z-index:2;
+    padding: 6rem 10vw 8rem;
+    line-height: 1.5;
+  }
+
+  .title {
+    font-size: 2.4rem;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  .author {
+    font-size: 0.95rem;
+    margin-bottom: 3rem;
+  }
+
+  .line {
+    font-size: 1rem;
+    margin: 0.25rem 0;
+  }
+
+  .stanza-gap {
+    margin-top: 1.5rem;
+  }
+
+  /* Scroll-reveal effect: lines materialize as you scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.9s ease-out,
+      transform 0.9s ease-out;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="goo"></canvas>
+
+<div class="content">
+  <p class="title reveal">theatre of smallness</p>
+  <p class="subtitle reveal">(they’ll see it in your eyes)</p>
+  <p class="author reveal">Maryam Farhan</p>
+
+  <p class="line reveal stanza-gap">Tears rolling down the cheeks of you</p>
+  <p class="line reveal">will never not be funny —</p>
+  <p class="line reveal">not the kind of funny that makes you laugh,</p>
+  <p class="line reveal">but the kind that makes the universe tilt its head and say,</p>
+  <p class="line reveal">look at them — still trying.</p>
+
+  <p class="line reveal stanza-gap">I saw you shimmering,</p>
+  <p class="line reveal">dancing in soft light</p>
+  <p class="line reveal">under clouds that looked like the backdrop of a theatre,</p>
+  <p class="line reveal">painted to make everything seem beautiful,</p>
+  <p class="line reveal">grand,</p>
+  <p class="line reveal">infinite.</p>
+
+  <p class="line reveal stanza-gap">And for a moment,</p>
+  <p class="line reveal">it was.</p>
+  <p class="line reveal">For a moment, the world stretched wide enough</p>
+  <p class="line reveal">to hold every version of us that could have been.</p>
+
+  <p class="line reveal stanza-gap">But then the clouds turned darker,</p>
+  <p class="line reveal">your tears fell,</p>
+  <p class="line reveal">and suddenly everything folded in —</p>
+  <p class="line reveal">the sky, the stage, the sound of breath.</p>
+  <p class="line reveal">The vastness became a room,</p>
+  <p class="line reveal">and the room became your silence.</p>
+
+  <p class="line reveal stanza-gap">Funny, isn’t it?</p>
+  <p class="line reveal">We live on a rock</p>
+  <p class="line reveal">floating almost endlessly through space,</p>
+  <p class="line reveal">surrounded by black holes,</p>
+  <p class="line reveal">seven planets,</p>
+  <p class="line reveal">and an infinity of unnameable things —</p>
+  <p class="line reveal">and yet,</p>
+  <p class="line reveal">the tears in your eyes</p>
+  <p class="line reveal">become the most important thing in sight.</p>
+
+  <p class="line reveal stanza-gap">How human of me</p>
+  <p class="line reveal">to choose smallness over wonder,</p>
+  <p class="line reveal">to place meaning inside moments</p>
+  <p class="line reveal">that were never meant to last.</p>
+
+  <p class="line reveal stanza-gap">And then there’s the ache of it —</p>
+  <p class="line reveal">how everything you put your heart and mind into</p>
+  <p class="line reveal">finds a way to leave.</p>
+
+  <p class="line reveal stanza-gap">The spiritual call it God’s timing.</p>
+  <p class="line reveal">The mentors call it a lack of consistency.</p>
+  <p class="line reveal">And the people who love you</p>
+  <p class="line reveal">don’t have a word for it yet —</p>
+  <p class="line reveal">so they build their own stories</p>
+  <p class="line reveal">about who you were supposed to be.</p>
+
+  <p class="line reveal stanza-gap">But maybe it’s none of that.</p>
+  <p class="line reveal">Maybe it’s just that to create</p>
+  <p class="line reveal">is written somewhere deep in the human soul —</p>
+  <p class="line reveal">to build, to love, to lose,</p>
+  <p class="line reveal">to keep trying anyway.</p>
+
+  <p class="line reveal stanza-gap">Because what else are we supposed to do</p>
+  <p class="line reveal">on this spinning rock,</p>
+  <p class="line reveal">if not pour meaning into the meaningless,</p>
+  <p class="line reveal">light into the dark,</p>
+  <p class="line reveal">heart into the hollow?</p>
+
+  <p class="line reveal stanza-gap">They say the greatest threat to man</p>
+  <p class="line reveal">is not death or destruction,</p>
+  <p class="line reveal">but the absence of meaning.</p>
+  <p class="line reveal">That’s the quiet kind of ruin —</p>
+  <p class="line reveal">when the galaxies go on spinning</p>
+  <p class="line reveal">and you’re still standing there,</p>
+  <p class="line reveal">trying to remember why it mattered.</p>
+
+  <p class="line reveal stanza-gap">And maybe that’s why we cry,</p>
+  <p class="line reveal">why we keep painting clouds</p>
+  <p class="line reveal">and calling them heaven —</p>
+  <p class="line reveal">to make the unbearable vastness</p>
+  <p class="line reveal">feel a little more human,</p>
+  <p class="line reveal">a little more ours.</p>
+</div>
+
+<script>
+/* ---------- Goo background (iridescent dripping) ---------- */
+const canvas = document.getElementById("goo");
+const ctx = canvas.getContext("2d");
+
+let W, H, DPR;
+
+function resize() {
+  DPR = window.devicePixelRatio || 1;
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
+  canvas.style.width = W + "px";
+  canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+window.addEventListener("resize", resize);
+resize();
+
+const bands = [];
+const B = 8; // number of goo columns
+
+for (let i = 0; i < B; i++) {
+  bands.push({
+    x: (i + 0.5) * (W / B),
+    w: 120 + Math.random() * 120,
+    wobble: 35 + Math.random() * 30,
+    speed: 0.5 + Math.random() * 0.6,
+    phase: Math.random() * Math.PI * 2
+  });
+}
+
+function iridescent(y, t) {
+  const hue = (y * 0.08 + t * 60) % 360;
+  return `hsla(${hue}, 85%, 85%, 0.55)`;
+}
+
+function drawBand(b, t) {
+  const steps = 40;
+  const top = -200;
+  const bottom = H + 200;
+
+  ctx.beginPath();
+
+  // Left side
+  for (let i = 0; i <= steps; i++) {
+    const p = i / steps;
+    const y = top + (bottom - top) * p;
+
+    const wob = Math.sin(p * 6 + t * b.speed + b.phase) * b.wobble +
+                Math.sin(p * 14 - t * b.speed * 0.7) * (b.wobble * 0.3);
+
+    const x = b.x + wob - b.w * 0.5;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+
+  // Right side
+  for (let i = steps; i >= 0; i--) {
+    const p = i / steps;
+    const y = top + (bottom - top) * p;
+
+    const wob = Math.sin(p * 6 + t * b.speed + b.phase + 1.2) * b.wobble +
+                Math.sin(p * 10 + t * b.speed * 1.1) * (b.wobble * 0.25);
+
+    const x = b.x + wob + b.w * 0.5;
+    ctx.lineTo(x, y);
+  }
+
+  ctx.closePath();
+
+  const grad = ctx.createLinearGradient(0, top, 0, bottom);
+  for (let s = 0; s <= 1; s += 0.1) {
+    grad.addColorStop(s, iridescent(s * H, t));
+  }
+
+  ctx.globalAlpha = 0.95;
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Glossy highlight
+  ctx.save();
+  ctx.clip();
+  const hg = ctx.createLinearGradient(b.x - b.w * 0.2, 0, b.x + b.w * 0.2, H);
+  hg.addColorStop(0.0, "rgba(255,255,255,0.6)");
+  hg.addColorStop(0.5, "rgba(255,255,255,0.15)");
+  hg.addColorStop(1.0, "rgba(255,255,255,0)");
+  ctx.fillStyle = hg;
+  ctx.fillRect(b.x - b.w, 0, b.w * 2, H);
+  ctx.restore();
+}
+
+function animate(t) {
+  t *= 0.001;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.globalAlpha = 0.2;
+  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.globalCompositeOperation = "lighter";
+  for (const b of bands) drawBand(b, t);
+  ctx.globalCompositeOperation = "source-over";
+
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+/* ---------- Scroll-based text materialization ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const revealEls = document.querySelectorAll(".reveal");
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          // Optional: unobserve after revealing
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.2
+    }
+  );
+
+  revealEls.forEach(el => observer.observe(el));
+});
+</script>
+
+</body>
+</html>
