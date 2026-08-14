@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Farm Scan 3D Scene</title>
+<style>
+  :root { --sky-low: #b8c4cf; --sky-high: #5d7185; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #6d7f91; }
+  body { font: 13px/1.5 ui-sans-serif, -apple-system, "Helvetica Neue", sans-serif; color: #f2f5f8; }
+  canvas { display: block; touch-action: none; }
+
+  #loader {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px;
+    background: linear-gradient(to bottom, var(--sky-high), var(--sky-low));
+    z-index: 10; transition: opacity .8s ease; letter-spacing: .08em;
+    text-transform: uppercase; font-size: 11px;
+  }
+  #loader.done { opacity: 0; pointer-events: none; }
+  #bar { width: min(280px, 60vw); height: 2px; background: rgba(255,255,255,.28); overflow: hidden; }
+  #bar > i { display: block; height: 100%; width: 0%; background: #fff; transition: width .2s ease; }
+
+  /* off center panel — drag anywhere on it to move, drag a corner to resize */
+  #panel {
+    position: fixed; z-index: 4;
+    top: 5vh; left: clamp(18px, 8vw, 180px);
+    width: min(54ch, 44vw); height: 90vh;
+    min-width: 260px; min-height: 180px;
+    max-width: 92vw; max-height: 92vh;
+    border-radius: 18px;
+    background: rgba(74, 82, 90, .40);
+    backdrop-filter: blur(7px) saturate(.92);
+    -webkit-backdrop-filter: blur(7px) saturate(.92);
+    border: 1px solid rgba(255, 255, 255, .14);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  #panel.dragging, #panel.resizing { cursor: grabbing; }
+
+  /* corner hit-zones, straddling the rounded edge so they're easy to grab */
+  #panel .rz { position: absolute; z-index: 2; width: 20px; height: 20px; }
+  #panel .rz.nw { top: -6px; left: -6px; cursor: nwse-resize; }
+  #panel .rz.ne { top: -6px; right: -6px; cursor: nesw-resize; }
+  #panel .rz.sw { bottom: -6px; left: -6px; cursor: nesw-resize; }
+  #panel .rz.se { bottom: -6px; right: -6px; cursor: nwse-resize; }
+
+  #panel-body {
+    height: 100%; display: flex; flex-direction: column;
+    border-radius: 18px; overflow: hidden;
+  }
+  #panel-grip {
+    flex: 0 0 auto;
+    height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, .07);
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
+  }
+  #panel-grip i {
+    width: 26px; height: 3px; border-radius: 2px;
+    background: rgba(255, 255, 255, .38);
+  }
+  #script {
+    flex: 1 1 auto;
+    overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+    padding: 34px 36px 46px;
+    color: #fff;
+    font: 400 14.5px/1.85 ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    letter-spacing: .005em;
+    text-shadow: 0 1px 3px rgba(10, 18, 26, .55);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.3) rgba(255,255,255,.07);
+  }
+  #script::-webkit-scrollbar { width: 9px; }
+  #script::-webkit-scrollbar-track { background: rgba(255,255,255,.07); }
+  #script::-webkit-scrollbar-thumb { background: rgba(255,255,255,.3); }
+  #script::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.45); }
+
+  #script p { margin: 0 0 1.6em; }
+  #script .title { text-align: center; margin: 6vh 0 3vh; }
+  #script .title .work { margin-bottom: 1.85em; }
+  #script .title .by { margin-bottom: 1.85em; opacity: .8; }
+  #script h2 {
+    text-align: center; margin: 2.8em 0 1.6em; font-size: 1em;
+    font-weight: 600; letter-spacing: .09em;
+  }
+  #script .indent { text-indent: 2.4em; }
+  #script .it { font-style: italic; }
+  #script .brand { font-style: italic; font-weight: 700; }
+  #script .end { text-align: right; opacity: .75; margin: 2.4em 0 0; }
+
+  @media (max-width: 900px) {
+    #panel {
+      left: 12px; right: 12px; width: auto;
+      top: 4vh; height: 88vh; max-width: none;
+    }
+    #script { padding: 24px 22px 34px; }
+  }
+
+  #credit {
+    position: fixed; right: 16px; bottom: 14px; z-index: 5; opacity: .6;
+    font-size: 10.5px; letter-spacing: .04em; text-align: right;
+    text-shadow: 0 1px 3px rgba(20,30,40,.55);
+  }
+  #credit a { color: inherit; }
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div>Loading scene</div>
+  <div id="bar"><i></i></div>
+  <div id="pct">0%</div>
+</div>
+
+<div id="panel">
+<i class="rz nw"></i><i class="rz ne"></i><i class="rz sw"></i><i class="rz se"></i>
+<div id="panel-body">
+<div id="panel-grip"><i></i></div>
+<article id="script">
+
+  <div class="title">
+    <p class="work">Martyr Mary</p>
+    <p class="by">by</p>
+    <p>nü creature</p>
+  </div>
+
+  <h2>Faith and Truth</h2>
+
+  <p>Mary Lou Carter kept a small white pure President James figurine perched on the silver box data monitor in her living room, a holy relic placed on the most expensive thing she owned. The casing was real silver, beneath the screen was an etching of the last supper. Above Christ, The President of Earth flickered on her screen. The reception was poor this far out into the rural zones, on one of the trash islands hobbled together to replace Florida, but she would never miss a rally or an address. No man in history had a voice as strong as his.</p>
+
+  <p>“No one has ever made peace like I have, no one has ever been more respected. I now control the entire earth, no matter what they try to say in the North African Empire, New Catholic China, or the White Race Commonwealth! Those places don’t even exist anymore. I blew them up, so the people there are free now. They’re thanking me.”</p>
+
+  <p>Or words as good. She really liked his suit that day, as she would mention later on one of her free speech streams. Details about her life were collected by state sponsored theologians after the fact, after she died and after the world was changed. Her history was pieced together through archived streams, her home operating systems, and statements taken from her long estranged liberal communist children - one of whom would die in the ultra patriot riots, the other two would disappear into non-record during a 27th century purge. She was a good woman. After every one of the president’s sermons she would power up a video emitter and beam her smiling face into the media ether,</p>
+
+  <p>“Hello faith and truth family! Praise be, to another glorious broadcast!”</p>
+
+  <p>Her streams would average about three or four viewers per. They made her feel involved. She would spend her evenings watching the drones tend the fields, picking hardy and nutritiously modified America fruits. This land was developed by her ancestors, the machinery is all old but the programming all still works. So there’s very little for her to oversee, she’s more a landowner than a farmer but she considers herself working class. Much like Joseph, a clone of her late husband who would watch factory droids piece together nuclear weaponry from 9 to 5, then stop at Mary’s to bring her holographic flowers on his way home. That day he offered her a bouquet of sparkling imaginary superflowers. He said,</p>
+
+  <p>“For the Lady.”</p>
+
+  <p>And she smiled back at him. He rested the bouquet down on her lap, only for Mary to search for the switch along its stem and turn the flowers off. The old man’s disappointment was apparent even through the fuzzy lens of Mary’s front porch security scanner. That is until he remembered something important and his face lit right back up,</p>
+
+  <p>“Did you hear it Mary, did you hear the good news?”</p>
+
+  <p>“What news would that be, Joseph?”</p>
+
+  <p>“It’s the president! He’s going to be speaking out at the Jacksonville Memorial Mega Church! We can go see em’, Mary! Tomorrow!”</p>
+
+  <h2>Glory and Fire</h2>
+
+  <p class="indent">That night she’d lay in bed glowing and trembling, clutching her warm hand quilted United Earth flag blanket between her thighs. Mary hadn't shown any public interest in a man since the original Joseph was melted in a drone repair accident, but according to messages intercepted by the super secret service and numerous confessional transcripts offered up freely by Mary’s pastor, she wanted the President bad. One intercepted message to President James read as such,</p>
+
+  <p class="it">I conceived my first child to the thought of you. While my husband fulfilled his duties both to me, and the population bureau. Pawing, grunting, and finishing. I imagined your strong breath against my neck and your jizzum, filling my belly with free God fearing children who would one day rule a world of gold that we would make together.</p>
+
+  <p>When she finally got to sleep, according to the deep neural scans taken by the home brain imager that she had only picked up because it was on sale at the Consumart, she dreamed of him. She dreamed of a man on fire walking slowly towards her, turning the earth into ash where he stepped. Even as his heat washed over her there was no doubt in her mind that this man engulfed in fire was there to save her, that she would burn but not be consumed. So she stood up to meet with him. So that he would wrap his burning hands around her vulnerable neck and she would cry,</p>
+
+  <p>“Glory! Glory and fire!”</p>
+
+  <p>Just as the dream ended and she woke up in her home, shaking, like the entire house was shaking. She ran to her window and pulled open her curtains to be blinded by bright and all consuming light,</p>
+
+  <p>“Are you here, Lord? Is it time?”</p>
+
+  <p>She trembled and fell to the ground, she spoke in tongues but her voice was drowned out by mechanical screeching, the bones of her home cracked and twisted while the garbage earth outside was ripped apart by the impact. Rather than shielding her eyes, she raised her hands together in prayer letting the light slip out around her fingers just as the fire burned its brightest, then burnt out. In a moment of calm she spoke,</p>
+
+  <p>“I saw it, oh Father I saw it.”</p>
+
+  <p>Mary would eventually pick herself up, she stumbled outside in her night gown to see the flaming wreck of Airforce 1000, brought down out of orbit by a group of Lunar Militants. It was an attack that would later be claimed by the Furry Liberation Front. Mary watched her reflection in a piece of the ship’s shattered gold plated hull for some time before she turned her gaze up at the skirmish overhead. At space action laser weapons that we’d now call primitive. Mary’s youngest said this about her,</p>
+
+  <p>“She loved all those military propaganda broadcasts, where they’d show cities melted down from orbit proudly displaying the cost of each strike in the bottom corner. She’d start to smile with all of her missing teeth and she’d point at the living room monitor like, look! That there’s what I voted for! That’s what makes us the best! Glorious! She liked all of the colours. Of course I was against basically every military action I’ve been alive for, ideologically, but the laser showers do look cool. Anyone who says they didn’t get a kick out of watching Toronto get zapped down to nothing is full of mutant cow shit.”</p>
+
+  <p>Mary watched the bright strobing laserfire blinking and cutting across black space so far away that she couldn’t hear or perceive the deaths of secret service fighter pilots or lunar furry commandos. The violence was all abstract to her then, it was just something bright and powerful and far away. But she knew he was close. The ground must have been hot beneath her feet but when she walked, she walked like something was guiding her. Guiding her through the wreckage to the escape pod where she found him, her beloved president, unconscious and covered in human viscera.</p>
+
+  <h2>Eternal Love</h2>
+
+  <p class="indent">Mary searched the President’s body for wounds, but found nothing to suggest that the blood he had been drenched in was his own. He was alive and as far as Mary could figure, in need of a nice hot bath. So she stripped him down and with great effort she dropped him in a tub of hot water. He was still unconscious. Mary looked down upon him and she said,</p>
+
+  <p>“I just know that my love will heal you.”</p>
+
+  <p>Much of this scene was captured by Mary’s <span class="brand">Love Always Loses</span>™ anti-transgender bathroom security system. The system was largely subsidised by a company that would cut together pornography out of the backed up security feeds, as was the price of privacy. Everything else would be caught by Mary’s own freedom stream,</p>
+
+  <p>“Hello again faith and truth family, today the Lord has truly blessed us!”</p>
+
+  <p>With the emitter set up off tilt just behind her, Mary lathered up her hands and washed more of the blood off of The President’s darling face, she leaned over the side of the tub and gazed at his beautiful 90 year old man bod. This would be her most popular stream.</p>
+
+  <p>“Now, Mr. President, I just gotta turn you over for a second. So I hope you ain’t shy about your back side.”</p>
+
+  <p>Those would be the last words she spoke, rather than screamed. With the man on his side she ran her hand down from the base of his neck and paused when she felt the seam, a small indentation between the ridges of his spine. She placed a kiss beside it, and his skin started to pull apart. She kissed him again and more of his skin was ripped down the length of his spine revealing not bone, but something black and green like sewage. Mary ran her fingers along the gross organic tissue and the president turned face down to sink beneath the swampy red bath water, bubbling and growling -</p>
+
+  <p class="it">W H E R E&nbsp; A M&nbsp; I ?</p>
+
+  <p>Mary recoiled in terror as his form cracked and arched, taking on the posture of an animal as more of his badly tanned skin was torn clean from his body. He rose up from the swamp water. His dark green muscles rippled, expanded, and broke free from his frail mortal shell. The President molted and transformed and then looked down at Mary with the bright slitted eyes of a reptile snarling,</p>
+
+  <p class="it">f e e d&nbsp; m e</p>
+
+  <p>Before he wrapped his claws around her throat. He lifted her off the ground and sunk his teeth into her soft belly to devour and discard this woman who, for the first time in her life, saw him for what he was. With her last ounce of life she cried,</p>
+
+  <p>“I still love you!”</p>
+
+  <p>And he snapped her neck. When he was full he whipped his long sharp tongue around his thin black lips. His eyes darted around his strange new middle class surroundings, nose flaring and sniffing with his curled nostrils, until he found himself gazing into the lens of a powered on video emitter. The device gazed back at him and he cursed,</p>
+
+  <p class="it">Well s h i t</p>
+
+  <p>Joseph would be the first to share the stream, an act that would get him killed again by a high speed censorship drone strike. Then there were the pornographers with their security footage which they sold to whatever left leaning news outlets still had capital at that point in history. They reported on this for at least a day, and for about a day they thought they had him. Video proof that President James was, and is, a woman eating reptilian monster. Then of course came the counter points. This line of thinking that came from several dozen conservative pundits all in calculated unison,</p>
+
+  <p>“The only reason that the left are acting like such lunatics about the President being a so-called <span class="it">reptilian</span> is that they don’t want a strong or capable man in charge. They can’t handle a traditional leader. They don’t want to talk about what an advanced alien mind might do for the world economy, or what a brood of super powered green guys with laser proof scales might mean militarily. Just imagine if they played sports! Good ole’ Post-American football! If reptilians are in control of humanity then they got into those positions of power based on merit, these are our Gods chosen by democracy and the free market. The left simply hates success. They don’t want to give up control, control to the master race!”</p>
+
+  <p>This was repeated ad nauseum and within a week James’ approval rating was double what it was before Mary was slaughtered. He became the first openly reptilian president and he paved the way for many other world leaders, religious types, and heads of industry to come out as ancient alien monsters. It was liberating to have suits tailored to their true forms and not those strange flabby skin bags they once disguised themselves with. They shared their plans to destroy earth openly and were celebrated for it, as whatever created short term gains on the market was deemed good.</p>
+
+  <p>And it was good.</p>
+
+  <p>Mary’s death accelerated things, it made her the mother of end times politics. Truths of human history were revealed, without alien secrecy or left wing bias. President James printed out new bibles, the President James bible. A holy book where Christ is a reptilian, capital is sacred, and no one is meant to look after their neighbors.</p>
+
+  <p>It became a best seller.</p>
+
+  <p>Nearly three centuries later James is still the president of earth, winning democratically, over and over with his advanced alien life span ruling for what might be an eternity. Making Earth hot and unlivable for us, but far more comfortable for his cold blooded kin, never to see justice and never to let go of power.</p>
+
+  <p class="end">END</p>
+
+</article>
+</div>
+</div>
+
+<div id="credit">
+  model by javajack · CC-BY-4.0<br>via Sketchfab
+</div>
+
+<script>
+// Dragging anywhere on the panel moves it; dragging a corner resizes it.
+// Both listen on document rather than relying on pointer capture, so they
+// keep tracking even if the cursor outruns the panel during a fast drag.
+(() => {
+  const panel = document.getElementById('panel');
+  const script = document.getElementById('script');
+  const MIN_W = 260, MIN_H = 180;
+
+  const point = e => e.touches ? e.touches[0] : e;
+
+  // A mousedown that lands in #script's own scrollbar gutter should scroll,
+  // not drag the panel.
+  function onScrollbar(e) {
+    if (e.touches) return false;
+    const r = script.getBoundingClientRect();
+    return e.clientX >= r.left + script.clientWidth;
+  }
+
+  // ---- move: drag anywhere on the panel -----------------------------
+  let moving = false, moveX, moveY, moveLeft, moveTop;
+
+  function moveDown(e) {
+    if (e.target.closest('.rz') || onScrollbar(e)) return;
+    // On touch, a drag that starts over the text should scroll it, not move
+    // the panel — mouse dragging stays literal ("anywhere") since desktop
+    // scrolling normally goes through the wheel, not a click-drag.
+    if (e.type === 'touchstart' && script.contains(e.target)) return;
+    const r = panel.getBoundingClientRect();
+    // First drag: pin the panel with an explicit pixel position, replacing
+    // the clamp()/vh values it opened with.
+    panel.style.left = r.left + 'px';
+    panel.style.top = r.top + 'px';
+    panel.style.right = 'auto';
+
+    const p = point(e);
+    moving = true;
+    moveX = p.clientX; moveY = p.clientY;
+    moveLeft = r.left; moveTop = r.top;
+    panel.classList.add('dragging');
+    e.preventDefault();
+  }
+
+  function moveMove(e) {
+    if (!moving) return;
+    const p = point(e);
+    const left = Math.min(Math.max(moveLeft + (p.clientX - moveX), -panel.offsetWidth + 60), innerWidth - 60);
+    const top = Math.min(Math.max(moveTop + (p.clientY - moveY), 0), innerHeight - 40);
+    panel.style.left = left + 'px';
+    panel.style.top = top + 'px';
+  }
+
+  function moveUp() { moving = false; panel.classList.remove('dragging'); }
+
+  panel.addEventListener('mousedown', moveDown);
+  document.addEventListener('mousemove', moveMove);
+  document.addEventListener('mouseup', moveUp);
+
+  panel.addEventListener('touchstart', moveDown, { passive: false });
+  document.addEventListener('touchmove', moveMove, { passive: false });
+  document.addEventListener('touchend', moveUp);
+
+  // ---- resize: drag a corner -----------------------------------------
+  let corner = null, rzX, rzY, rzLeft, rzTop, rzW, rzH, maxW, maxH;
+
+  function resizeDown(e) {
+    corner = e.currentTarget.classList[1];   // nw / ne / sw / se
+    const r = panel.getBoundingClientRect();
+    panel.style.left = r.left + 'px';
+    panel.style.top = r.top + 'px';
+    panel.style.right = 'auto';
+
+    const p = point(e);
+    rzX = p.clientX; rzY = p.clientY;
+    rzLeft = r.left; rzTop = r.top; rzW = r.width; rzH = r.height;
+    maxW = innerWidth * 0.92; maxH = innerHeight * 0.92;
+    panel.classList.add('resizing');
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  function resizeMove(e) {
+    if (!corner) return;
+    const p = point(e);
+    const dx = p.clientX - rzX, dy = p.clientY - rzY;
+    const east = corner === 'ne' || corner === 'se';
+    const south = corner === 'sw' || corner === 'se';
+
+    const w = Math.min(Math.max(rzW + (east ? dx : -dx), MIN_W), maxW);
+    const h = Math.min(Math.max(rzH + (south ? dy : -dy), MIN_H), maxH);
+
+    panel.style.width = w + 'px';
+    panel.style.height = h + 'px';
+    if (!east) panel.style.left = (rzLeft + (rzW - w)) + 'px';
+    if (!south) panel.style.top = (rzTop + (rzH - h)) + 'px';
+  }
+
+  function resizeUp() { corner = null; panel.classList.remove('resizing'); }
+
+  document.querySelectorAll('#panel .rz').forEach(handle => {
+    handle.addEventListener('mousedown', resizeDown);
+    handle.addEventListener('touchstart', resizeDown, { passive: false });
+  });
+  document.addEventListener('mousemove', resizeMove);
+  document.addEventListener('mouseup', resizeUp);
+  document.addEventListener('touchmove', resizeMove, { passive: false });
+  document.addEventListener('touchend', resizeUp);
+})();
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js",
+    "three/addons/": "./vendor/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const SKY_HIGH = new THREE.Color('#5d7185');   // blue grey zenith
+const SKY_LOW  = new THREE.Color('#aab6c2');   // muted haze at the horizon
+
+// renderer
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(SKY_LOW.getHex(), 1, 100); // distances set once the model is measured
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 5000);
+
+// sky
+// inverted sphere and sky gradient
+const sky = new THREE.Mesh(
+  new THREE.SphereGeometry(1, 48, 32),
+  new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    fog: false,
+    uniforms: {
+      topColor:    { value: SKY_HIGH.clone() },
+      bottomColor: { value: SKY_LOW.clone() },
+      offset:      { value: 0.06 },
+      exponent:    { value: 0.75 }
+    },
+    vertexShader: `
+      varying vec3 vWorldPos;
+      void main() {
+        vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: `
+      uniform vec3 topColor, bottomColor;
+      uniform float offset, exponent;
+      varying vec3 vWorldPos;
+      void main() {
+        float h = normalize(vWorldPos + vec3(0.0, offset, 0.0)).y;
+        float t = pow(clamp(h, 0.0, 1.0), exponent);
+        vec3 col = mix(bottomColor, topColor, t);
+        gl_FragColor = vec4(col, 1.0);
+      }`
+  })
+);
+sky.renderOrder = -1;
+scene.add(sky);
+
+// light
+// The scan uses KHR_materials_unlit (baked texture), but keep light in the scene
+// so any non-unlit material still reads correctly.
+scene.add(new THREE.HemisphereLight(SKY_HIGH.getHex(), 0x6b6257, 2.2));
+const sun = new THREE.DirectionalLight(0xfff4e6, 1.5);
+sun.position.set(-1, 2.2, 1.4);
+scene.add(sun);
+
+// controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.rotateSpeed = 0.5;
+controls.zoomSpeed = 0.8;
+controls.panSpeed = 0.7;
+controls.screenSpacePanning = false;
+controls.maxPolarAngle = Math.PI * 0.495;   // never drop below the ground plane
+controls.autoRotate = true;                 // gentle drift until the user grabs it
+controls.autoRotateSpeed = 0.28;
+['pointerdown', 'wheel'].forEach(ev =>
+  renderer.domElement.addEventListener(ev, () => { controls.autoRotate = false; }, { once: true, passive: true })
+);
+
+// load
+const loaderEl = document.getElementById('loader');
+const barEl = document.querySelector('#bar > i');
+const pctEl = document.getElementById('pct');
+
+new GLTFLoader().load(
+  'farm_test_simplified_3d_mesh.glb',
+  gltf => { frame(gltf.scene); finish(); },
+  evt => {
+    // total is only known when the server sends Content-Length
+    const pct = evt.total ? evt.loaded / evt.total : Math.min(evt.loaded / 49717780, 0.99);
+    barEl.style.width = pctEl.textContent = Math.round(pct * 100) + '%';
+  },
+  err => {
+    console.error(err);
+    pctEl.textContent = 'Could not load the model — serve this folder over http://, not file://';
+    pctEl.style.textTransform = 'none';
+  }
+);
+
+function frame(model) {
+  model.traverse(o => {
+    if (o.isMesh) {
+      o.frustumCulled = true;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach(m => {
+        m.fog = true;                       // let distant geometry sink into the haze
+        if (m.map) m.map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+        terrainMaterials.add(m);
+      });
+    }
+  });
+
+  // Recentre on the origin, sitting on y = 0.
+  const box = new THREE.Box3().setFromObject(model);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  model.position.set(-center.x, -box.min.y, -center.z);
+  scene.add(model);
+
+  const span = Math.max(size.x, size.z);   // the scan is a wide, flat plate of terrain
+
+  // Sky scaled to the scene. Fog holds off until well past the foreground 
+  sky.scale.setScalar(span * 30);
+  scene.fog.near = span * 0.38;
+  scene.fog.far = span * 0.80;
+  camera.far = span * 80;
+  camera.near = span / 4000;
+  camera.updateProjectionMatrix();
+
+  // Viewpoint sits low and *inside* the footprint of the scan, so the terrain runs
+  // off the bottom of the window as ground and the far side fades into the haze.
+  // Inset per axis, so the eye stays over the terrain whichever way the plate is long.
+  const dir = new THREE.Vector3(0.58, 0, 0.81).normalize();
+  const eye = new THREE.Vector3(dir.x * size.x * 0.24, 0, dir.z * size.z * 0.24);
+  eye.y = Math.max(size.y * 1.0, span * 0.105);
+  camera.position.copy(eye);
+  controls.target.set(0, size.y * 0.30, 0);
+
+  // Stay over the terrain: too far out and the scan reads as a floating slab.
+  controls.minDistance = span * 0.06;
+  controls.maxDistance = span * 0.46;
+  controls.maxPolarAngle = Math.PI * 0.46;
+  controls.minPolarAngle = Math.PI * 0.16;
+  controls.update();
+
+  terrain = model;
+  terrainHeight = size.y;
+  scheduleGlitch(4);
+}
+
+function finish() {
+  loaderEl.classList.add('done');
+  setTimeout(() => loaderEl.remove(), 900);
+}
+
+// glitch
+
+let terrain = null, terrainHeight = 1;
+const terrainMaterials = new Set();
+
+const REPTILE = new THREE.Color('#5f9e21');       // scaly green the world drifts toward
+const SKY_SICK_HIGH = new THREE.Color('#2f4a1e');
+const SKY_SICK_LOW  = new THREE.Color('#93a83f');
+const FOG_SICK = new THREE.Color('#7d9440');
+
+let glitch = null;          // { t, dur } while a fit is in progress
+let nextGlitchAt = Infinity;
+let terrainRestY = 0;
+const clock = new THREE.Clock();
+
+function scheduleGlitch(delay) {
+  nextGlitchAt = clock.getElapsedTime() + delay;
+}
+
+function startGlitch() {
+  terrainRestY = terrain.position.y;
+  glitch = { t: 0, dur: 1.7 + Math.random() * 2.1 };
+}
+
+function endGlitch() {
+  glitch = null;
+  terrainMaterials.forEach(m => {
+    m.color.setRGB(1, 1, 1);
+    if (m.map) m.map.offset.set(0, 0);
+  });
+  sky.material.uniforms.topColor.value.copy(SKY_HIGH);
+  sky.material.uniforms.bottomColor.value.copy(SKY_LOW);
+  scene.fog.color.copy(SKY_LOW);
+  renderer.domElement.style.filter = '';
+  renderer.domElement.style.transform = '';
+  if (terrain) terrain.position.y = terrainRestY;
+  scheduleGlitch(9 + Math.random() * 16);
+}
+
+function updateGlitch(dt, time) {
+  if (!glitch) {
+    if (terrain && time >= nextGlitchAt) startGlitch();
+    return;
+  }
+
+  glitch.t += dt;
+  const p = glitch.t / glitch.dur;
+  if (p >= 1) { endGlitch(); return; }
+
+  // Hard attack, ragged sustain, quick fall-off — plus a stutter so it never
+  // settles into a smooth fade.
+  const envelope = Math.min(1, p / 0.06) * Math.min(1, (1 - p) / 0.25);
+  const stutter = 0.55 + 0.45 * Math.sin(time * 47 + Math.sin(time * 13) * 3);
+  const k = envelope * (0.55 + 0.45 * stutter);
+
+  // The world turns reptilian.
+  terrainMaterials.forEach(m => {
+    m.color.setRGB(1, 1, 1).lerp(REPTILE, k * 0.55);
+    if (m.map && Math.random() < 0.5) {
+      m.map.offset.set(
+        (Math.random() - 0.5) * 0.012 * k,
+        (Math.random() - 0.5) * 0.012 * k
+      );
+    }
+  });
+  sky.material.uniforms.topColor.value.copy(SKY_HIGH).lerp(SKY_SICK_HIGH, k * 0.8);
+  sky.material.uniforms.bottomColor.value.copy(SKY_LOW).lerp(SKY_SICK_LOW, k * 0.8);
+  scene.fog.color.copy(SKY_LOW).lerp(FOG_SICK, k * 0.9);
+
+  // Picture tearing: hue swing on the canvas, plus a jolt that snaps back.
+  const jolt = (Math.random() < 0.35 ? (Math.random() - 0.5) * 26 * k : 0);
+  renderer.domElement.style.filter =
+    `hue-rotate(${(16 + 26 * stutter) * k}deg) saturate(${1 + 0.7 * k}) contrast(${1 + 0.28 * k})`;
+  renderer.domElement.style.transform = `translate3d(${jolt.toFixed(2)}px, ${(jolt * 0.35).toFixed(2)}px, 0)`;
+  if (terrain) terrain.position.y = terrainRestY + (Math.random() - 0.5) * terrainHeight * 0.05 * k;
+}
+
+// loop
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+renderer.setAnimationLoop(() => {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const time = clock.getElapsedTime();
+
+  controls.update();
+  updateGlitch(dt, time);
+  sky.position.copy(camera.position);   // sky stays centred on the viewer
+  renderer.render(scene, camera);
+});
+</script>
+</body>
+</html>

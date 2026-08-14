@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "farm-scene",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/private/tmp/claude-501/-Users-sophiacollender-Desktop-Pulp--Faith---Truth/3c429494-0faf-436c-990e-897dd2d0975b/scratchpad/serve.py"],
+      "port": 8123
+    }
+  ]
+}
