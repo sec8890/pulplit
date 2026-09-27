@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #d8dfe7;       /* just-off-white blue grey */
+    --ink: #0b0b0c;
+    --link: #0000ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    color: var(--ink);
+    font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  #snow {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+  }
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .kicker {
+    font-style: italic;
+    font-size: 1.15rem;
+    letter-spacing: 0.04em;
+  }
+  h1 {
+    font-weight: 600;
+    font-size: clamp(3rem, 10vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0.4rem 0 1.2rem;
+  }
+  h2 {
+    font-weight: 600;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+  section {
+    padding: 22vh 0;
+  }
+  p + p { margin-top: 1rem; }
+  a { color: var(--link); }
+  .scroll-hint {
+    margin-top: 3rem;
+    font-style: italic;
+    font-size: 1rem;
+  }
+  blockquote {
+    font-size: 1.8rem;
+    font-style: italic;
+    line-height: 1.3;
+    border-left: 2px solid var(--ink);
+    padding-left: 1.2rem;
+    margin: 2rem 0;
+  }
+  footer {
+    padding: 20vh 0 30vh;
+    font-size: 1rem;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<main>
+  <header>
+    <p class="kicker">By Katerina Schafer</p>
+    <h1>Plan C</h1>
+    <p class="scroll-hint">Scroll to continue &darr;</p>
+  </header>
+
+  <section>
+    <p>“But don’t touch that dial, because the weather is coming up next.”</p>
+    <p>Emma chuckled to herself as she lifted the lid from the pot on the stove, releasing steam and a savory fragrance into the air. Nobody had radios with dials anymore, and nobody would change the channel, anyway. Not after a blizzard in the middle of July.</p>
+    <p>“And we’re back with Hurricane Jim. Or should we call you Blizzard Bob?”</p>
+    <p>She rolled her eyes at the corny joke, lifting a spoonful of soup from the bubbling brown liquid before her. The morning show host and Jim/Bob laughed in a canned, artificial way that sounded a step above a laugh track on a sitcom.</p>
+    <p>“Blizzard Bob suits me just fine, Rob. Hey, we rhyme!”</p>
+    <p>More canned laughter. She blew the steam from the soup and tasted it, rolling the hot liquid around her tongue for a moment. Then she swallowed and nodded with satisfaction. “Perfect.”</p>
+    <p>“Another freak blizzard hit Glacier Pass last night, burying the town in three feet of snow within fifteen minutes of the first snowflake, reminiscent of the Whiteout of ‘21. Fortunately, the storm only affected our town instead of the entire county this time, and most businesses and private homes here now have generators thanks to the increasing number of these strange, apparently random snowstorms. Oh, hold on, I’m getting another bulletin.”</p>
+    <p>She turned the burner off and pushed the pot to the back of the stovetop, hoping the bulletin wasn’t bad news.</p>
+    <p>“Well, everybody, good news. It’s finally stopped snowing! And it looks like current estimates are ten feet of snow on the ground.”</p>
+    <p>Only ten feet? That was good, she thought, untying her apron and hanging it on its hook. Not that she’d have trouble with any amount of snow. Pipaluk’s animated snow shovel had probably been working all night, overjoyed at the opportunity to perform its favorite task out of season.</p>
+    <p>“Do we have any idea what’s causing these snowstorms, Bob?”</p>
+    <p>She darted into the mudroom, grabbed her snowsuit, snow boots, hat, scarf, and gloves, and dashed back into the kitchen so she didn’t miss a word.</p>
+    <p>“None at all, Rob. The weather phenomena here at Glacier Pass have been getting weirder and weirder over the past three years, bringing our little town national and international attention, and even the world’s top meteorologists are scratching their heads. A recent NASA report said, and I quote, ‘The freak snow storms appear to come out of nowhere. We can't predict when they will strike next. There are absolutely no warning signs—no changing pressure systems, cloud formations, warm and cold fronts. We are at a total loss why this is happening.’”</p>
+    <p>She shook her head as she zipped up her snowsuit. How did Lily always get out of being implicated? Everybody in town knew about the snow witch living in their midst, and yet every time she got upset and her magic went haywire, everybody seemed to forget all about her.</p>
+    <p>Maybe she had a fairy godmother working behind the scenes to keep her out of trouble.</p>
+    <p>Emma chuckled at the thought. Fairy godmother. As if there was such a thing.</p>
+    <p>“It’s time for a commercial break, but don’t go anywhere yet. We’ll be speaking with an expert from NASA—”</p>
+    <p>The sound of her boots clomping across the kitchen and her nylon snowsuit squeaking with each step drowned out whatever the deejay said next, but she’d heard it all before. For the rest of the day, they would talk about the blizzard, comparing it to previous ones, speculating about the cause, and sharing snow-related anecdotes. Meanwhile, the obvious instigator was probably unconscious in her house next door, passed out from the strain of overdoing it again, and the natural mother in Emma couldn’t stand for that.</p>
+    <p>So, she picked up the lidded pot with her mittened hands, and she headed out into the cold.</p>
+    <p>The sidewalk was clear, as she expected, and the snow rose in straight, solid white walls on either side of it. She could see neither the street ahead of her, nor the houses on either side of hers. For all intents and purposes, she was walking through a white labyrinth with no ceiling except for the steel gray sky above. She knew the sky was there, although she didn’t bother to strain her neck looking up. Her snowsuit gave her little flexibility, and at a mere three feet tall, it was a long, long way up.</p>
+    <p>Winter Wonderland came to mind, the song Lily used as her ringtone. Emma hummed the notes with a smile on her face, turned left at the sidewalk, and stopped in her tracks.</p>
+    <p>A tall man stood ahead of her, just at the turnoff toward Lily’s house. He wore a bright red sweater and had his hands stuffed in the pockets of his black jeans, his face in profile and the side of his mouth twisted a bit as he stared in front of him. Emma had never seen him before, but she didn’t get the sense she should be suspicious or fearful of him. He looked thoughtful. Maybe surprised. The side of his brow that was visible to her seemed slightly raised, though she couldn’t identify an eyebrow or his eye color or shape from this angle. His long, wavy blonde hair was so pale it was nearly white, however, so it stood to reason his eyebrow was pale, as well, and she would wager his eyes were blue.</p>
+    <p>Had Lily been expecting company?</p>
+    <p>“Hello,” Emma called cheerfully, beginning again to walk.</p>
+    <p>The tall stranger turned to look at her, definitely surprised now. And his wide eyes were definitely blue. Pale blue, like the glaciers she saw in nature documentaries. He had a strong jaw and a straight nose, and on second thought, maybe he wasn’t so tall, after all. She was just exceptionally short.</p>
+    <p>“My name is Emma,” she greeted him politely, coming to a stop a few steps away from him so she wouldn’t have to bend over backwards to look up at him. “And you are…?”</p>
+    <p>“Boris,” he replied, recovering from his surprise and offering her a bright smile. Between the sunlight reflecting off the snow and the blinding whiteness of his teeth, she had to squint to see. “I was told to meet a woman named Lily here, but…”</p>
+    <p>Emma walked forward to look around the corner, and what she saw made her let out a heavy sigh. A rounded sheet of clear ice rose from the front gate up, out, and around Lily’s quaint little cottage, and within the ice, a picturesque scene of untouched white snow and a constant, gentle snowfall completed the image. Emma didn’t have to see the whole thing to know what it was.</p>
+    <p>“A snow globe,” she said, sighing again. “She enclosed her house in a snow globe.”</p>
+    <p>“Then I can assume this is a relatively recent development?” Boris asked.</p>
+    <p>Emma nodded and looked up at him. “Was she expecting you?”</p>
+    <p>“I thought so,” Boris said, twisting one side of his mouth up again. “Her cousin Crystal said—”</p>
+    <p>“That explains it,” Emma interrupted. “I’m sorry to have to tell you this, Boris, but Crystal has a tendency to meddle in Lily’s life, and Lily…has a tendency to do things like this when she wants to be left alone.”</p>
+    <p>Boris blew out a heavy breath and removed his right hand from his pocket to check his watch. His breath fogged in the air, but his hand was bare, and he showed no discomfort as he stood outside in just a sweater and jeans, Emma noted. Probably a snow warlock. Although how he got into the maze without breaking the smooth white walls was beyond her.</p>
+    <p>“I am a little early, though…”</p>
+    <p>Emma gave him a sad shake of her head. Poor guy. He seemed nice, but Lily clearly didn’t want to see him. “What, exactly, did Crystal tell you?”</p>
+    <p>“Well, I’m an author, and I was hoping to find someone skilled in enchantments who could bring my books to life, so to speak,” he said, dropping his hand to his side. “Crystal said Lily was the best. And judging by this work, she was right. The magic she used to make this is very advanced.”</p>
+    <p>“Oh, Lily is the best. She—” Emma paused, thinking. “Can you make an opening in this?”</p>
+    <p>“Uh…”</p>
+    <p>They walked up the sidewalk to the base of the snow globe, thick layers of packed ice engraved with intricate vines in shades of blue reminiscent of Boris’ eyes. If Boris wasn’t here, Emma would have gone back to her house to retrieve Pipaluk’s new heat cubes, animated squares of orange gelatin-like material that burned hotter than lava. But it was such a shame to ruin Lily’s beautiful handiwork, and if Boris had a more elegant solution than her mad scientist husband, she’d rather go with that. Especially if she could get Lily to at least talk to Boris this way.</p>
+    <p>He brushed his bare fingers over the designs on the ice base. “The magic is still active. If I try to force through it—”</p>
+    <p>“Oh! What’s that?”</p>
+    <p>Emma could just see over the top edge of the base, and there was a brown cardboard box on the front porch, partially concealed by a vertical support pillar. She couldn’t tell for certain, but she thought she saw something moving in it.</p>
+    <p>“There’s something in it,” Boris confirmed. “Do you think Lily will come outside soon?”</p>
+    <p>Emma shook her head, wondering how much to say. “She, um…well, no. Could you get through…?”</p>
+    <p>Boris nodded and flattened his palm against the ice. “Hope she doesn’t mind…”</p>
+    <p>Emma had seen Lily and her mother use their magic before, but it was always interesting to watch. Pipaluk’s work involved science, math, and, usually, explosions, whereas snow magic wove blue and white tendrils from the user’s fingers through the surface they touched or the air around their hand in a much more subtle, but no less powerful, force. That’s what was happening now, the white and blue cracking and splintering the blue and white, and when she traced her eyes up Boris’ arm to his face, she could see from the set of his jaw and the furrow in his brow that this wasn’t easy. She’d never seen Lily show that much exertion while working her magic.</p>
+    <p>Although she’d seen Lily pass out from overexerting herself plenty of times.</p>
+    <p>“Stand back,” Boris instructed.</p>
+    <p>Emma took three steps back.</p>
+    <p>A loud crack rent the otherwise still air, and then another. The tendrils spreading outwards from his hand reached invisible points to his left and right, suddenly splitting into single vertical lines tracing down to the ground and up above his head, where they turned sharply inwards to draw a horizontal line that met in the middle. He shoved, and another, louder crack split the air as the ice door slid smoothly forward, slicing through snow and creating a clear walkway for his six-foot-frame.</p>
+    <p>“It’s safe now,” he said, panting slightly.</p>
+    <p>Emma took three hesitant steps toward the opening, and then Lily’s front door burst open with such force it hit the house and bounced back. The young woman leaned heavily against the doorframe, her normally pale complexion now snow white, her chest heaving with each labored breath.</p>
+    <p>“Lily!” Emma cried, throwing caution to the wind and running toward her.</p>
+    <p>A pointy black nose peeked over the edge of the cardboard box, followed by a dark brown stripe leading up a long snout to a distinctive black mask set within a tan furry face.</p>
+    <p>“Is that a raccoon?” Emma heard Boris call behind her.</p>
+    <p>“My… magic…” Lily gasped, rage swirling in her icy blue eyes. She didn’t have the strength to stand upright, but she lifted her gloved right hand in a sharp, swift movement that threw the ice door into Boris with a whoosh and a thud, shoving him out of the snow globe and sealing the door back into the base before Emma had even reached the porch.</p>
+    <p>“Lily,” Emma scolded her.</p>
+    <p>And then Lily’s eyes rolled back in her head, and she collapsed in a heap onto the cardboard box. The raccoon leaped aside just in time, and if Emma didn’t know better, she would swear the animal was glaring at Lily with those beady, black eyes.</p>
+    <p>To most people, this would have been startling. Shocking. At least mildly surprising.</p>
+    <p>But Emma had married a mad scientist. Assisted with his experiments. Attended countless conferences with him, meeting all sorts of creeps, dweebs, and weirdos. Met other beleaguered wives of mad scientists and founded a Facebook group for them, a place where they could vent and swap recipes for casseroles and first aid ointments. Borne two children, holding her husband’s hand during those long hours of labor and reassuring him it would all be over soon.</p>
+    <p>This was nothing.</p>
+    <p>She stepped over Lily’s prone body into the icy hallway, her breath fogging in the air as she made the short trip to the kitchen, where she stood up on tiptoe and set the rapidly cooling soup on the counter. Then she found the stool Lily’s mother had bought just for her use and used it to reach the old-fashioned landline phone, dialing the numbers as best she could with gloved fingers.</p>
+    <p>“Pick up,” she muttered, listening to it ring. “Pick up, you dear, sweet, bald—”</p>
+    <p>Click.</p>
+    <p>“Pipaluk?” she asked excitedly.</p>
+    <p>“Emma?” he replied, his voice thick with sleep.</p>
+    <p>“Pipaluk, execute Plan C.”</p>
+    <p>“What?”</p>
+    <p>She groaned in frustration. “Plan C. C! As in ‘cat.’ Or—”</p>
+    <p>“Oh!”</p>
+    <p>His voice disappeared amidst fumbling and tumbling, and she knew he’d jumped out of bed and dropped the phone. He called to her from a distance, apologizing as he scrambled to recover the receiver. She sighed and tapped her foot on the floor.</p>
+    <p>“Plan C. Got it,” he finally said, breathless.</p>
+    <p>“Thank you. Oh, and there’s a nice young man named Boris outside of Lily’s house, probably with a broken nose. Could you check on him and bring him with you?”</p>
+    <p>“Uh, yes. Boris, you said?”</p>
+    <p>“If he’s conscious, he can explain. See you soon, dear. And happy birthday.”</p>
+    <p>She knew it wasn’t possible to hear a smile, but she was sure she did, all the same, just before she hung up the phone. There was a wide smile on her face, at least. She hopped down from the stool, caught herself on the counter as her boots slipped on the ice, and righted herself quickly. Then she returned to Lily, still unconscious in the doorway.</p>
+    <p>This was a pickle.</p>
+    <p>Lily was two feet taller than Emma, and a taller frame meant more weight, too, although Lily had a slender figure. Since the girl was a snow witch, the cold certainly wouldn’t bother her, so there was technically nothing wrong with leaving her where she lay. Except Emma knew Lily wouldn’t like to lie out here on her porch for anybody to see, and that innate maternal instinct which drove Emma to throw herself between her children and her husband’s experiments time and time again wouldn’t allow her to leave her deceased best friend’s daughter like this, either. So, she bent over, grabbed Lily’s ankle, and pulled with all her strength.</p>
+    <p>The raccoon took Lily’s other ankle.</p>
+    <p>They froze for a moment, staring at each other. The raccoon stood on its back feet, its little clawed hands wrapped around Lily’s ankle in much the same way Emma had positioned her hands. Its nose twitched. Emma raised an eyebrow. Its bushy, black-striped tail flicked.</p>
+    <p>“You and I are having a talk after this,” Emma said, and then she resumed pulling, as did the raccoon. Between the two of them, they dragged Lily into the house, down the hall, and toward the sofa. Then they took a short break for Emma to close the front door, and when she returned, the two somehow lifted and rolled Lily onto the sofa. After arranging her in what looked to be a semi-comfortable position, Emma found a blanket, covered the young woman with it, and then turned to face the raccoon.</p>
+    <p>It sat back on its haunches, waiting. Expectant. Gray ears swiveling to catch the sound of Pipaluk executing Plan C beneath them.</p>
+    <p>“My husband and children will arrive soon, along with a snow warlock,” Emma stated. “I suggest you try to act more like a raccoon if you don’t want to be found out.”</p>
+    <p>Its nose twitched.</p>
+    <p>She sighed. “Maybe it’s best if you hide in Lily’s room for now. It’s this way.”</p>
+    <p>Perhaps she should be more suspicious of a creature which was clearly not a raccoon and had somehow broken into Lily’s magic snow globe, but Emma fancied herself a good judge of character. There were some shady characters at mad scientist symposiums—Dr. Frankenstein wannabes, or “creeps,” as she liked to call them. This raccoon was not a creep, nor was it a “dweeb,” like the mad scientists who ate, drank, and breathed textbooks, along with supplements to compensate for vitamin D deficiency caused by lack of exposure to sunlight. No, this raccoon was a “weirdo,” just like her husband, which meant it was safe. Probably.</p>
+    <p>After installing the weirdo in Lily’s room with the witch’s laptop and instructions to search for information about raccoons, Emma returned to the living room just in time for a minor explosion to rock the icy floor beneath her feet. She clutched at the arm of the sofa as another explosion, louder and nearer, cracked the floor near the defunct fireplace. One more blast, and Pipaluk’s soot-stained, smiling face poked through the new hole there.</p>
+    <p>“Hello,” he said cheerily, blackened lab goggles very similar to the raccoon’s black mask. “Don’t come any closer. You should be fine where you are. Well…no, better take a step back.”</p>
+    <p>Emma took five steps back.</p>
+    <p>Pipaluk’s head disappeared, and, less than a minute later, the final explosion blew a hole through the floor, large enough to accommodate a good-sized Christmas tree. Which it did. The rocket-powered fir launched toward the ceiling, colliding with it and ricocheting off the walls of the glacial room, dropping ornaments and pine needles as it went.</p>
+    <p>“Pipaluk,” she called, dodging the flying evergreen.</p>
+    <p>“I’m trying.” His head popped through the floor again, this time tight with concentration as his fingers clumsily worked a game controller with a joystick. “I just—can’t seem to get—”</p>
+    <p>“Let me do it, Daddy,” called their eight-year-old son from within the tunnel.</p>
+    <p>“No, I can—”</p>
+    <p>“Give it to him,” Emma called, ducking the tree.</p>
+    <p>The problematic projectile pine immediately settled down when the boy took the controls. He piloted it effortlessly into a safe position next to the fireplace and the hole in the floor, bringing it in for a gentle landing with no jarring impact. Then he handed the controls back to his father and clambered out of the secret tunnel.</p>
+    <p>“What’s wrong with Lily?” he asked, running toward the unconscious snow witch on the sofa as fast as his heavy snow boots would let him. “Lily?”</p>
+    <p>“She’s resting,” Emma intervened, patting her son’s short, messy blue hair, so similar to the locks Pipaluk used to have. “Why don’t you fix the decorations with your sister?”</p>
+    <p>Pipaluk’s neon green wig disappeared for a moment, and then he lifted their five-year-old daughter up and out of the tunnel, also bundled into a snowsuit. Her bright pink eyes landed on Lily, and she hit the floor running, her first reaction to check on her favorite neighbor. The sight warmed Emma’s heart.</p>
+    <p>“She’s fine,” she reassured her daughter, catching the little girl before she reached Lily and steering her toward her brother and the innocuous-looking brown sack Pipaluk threw out of the hole. “Go make it pretty.”</p>
+    <p>Pipaluk climbed out of the tunnel, and behind him was Boris, a strip of white tape over his purple nose and bewilderment in his blue eyes. The children were pulling wreaths, figurines, ornaments, and other assorted Christmas decorations from the brown bag, and although the pile beside them was already larger than the bag, there was still more inside.</p>
+    <p>“Sorry about what happened earlier, Boris,” Emma apologized. “Lily can be very touchy about her magic.”</p>
+    <p>“I…noticed,” the warlock said, standing next to the hole in the floor and looking around the room. “Is she okay?”</p>
+    <p>“I have the cure!” Pipaluk burst out, literally jumping up and down in his excitement.</p>
+    <p>“Did you bring the food?” Emma asked, raising an eyebrow at her husband’s exuberance.</p>
+    <p>“Ah…oh, yes, here.” He reached into a pocket of his white lab coat and handed her a Fisher Price plastic banana. “But I did it! Last night, with that explosion, I—”</p>
+    <p>“Mommy, where should I put this?” a high-pitched child’s voice interrupted.</p>
+    <p>“Wherever you want,” Emma replied. “She’s fine, Boris. Just worn out from overdoing it with her magic. Are you sure, Pipaluk?”</p>
+    <p>“It was sitting on my lab bench this morning, and look! Look!” He shoved the glass vial in front of her face, pointing at the label. “It says ‘The Cure’!”</p>
+    <p>She frowned at him. “Pipaluk…”</p>
+    <p>“Well, we won’t know if we don’t try it!”</p>
+    <p>She grabbed his arm and yanked him back as he darted for Lily. “You cannot give her something you haven’t tested.”</p>
+    <p>“But—”</p>
+    <p>“Come with me. Boris, could you watch the children, please?”</p>
+    <p>“Honey—”</p>
+    <p>Emma half-dragged Pipaluk and his suspicious vial out of the room and down the hall to the kitchen. “If you didn’t put that label on that vial—and I know you didn’t—then who did?”</p>
+    <p>“I don’t know,” he whined. “But why would anybody make it up? What if it was that fairy who—”</p>
+    <p>“You and your fairy,” Emma sighed. She released Pipaluk’s arm and set the toy banana on the counter next to the soup. “Taste it.”</p>
+    <p>“But—”</p>
+    <p>She turned to face her suddenly deflated husband, placing her hands on her hips for emphasis. “If you’re too scared to try it, then you’re certainly not giving it to Lily.”</p>
+    <p>He removed his lab goggles from his face and pushed them up to the top of his head, his mouth twisting into a frown as he studied the vial with pink eyes so large they looked almost buggy behind his thick, round glasses. “Well, I guess I could try a drop…”</p>
+    <p>“Two drops.”</p>
+    <p>He sighed and nodded. “Two drops. Well, if this doesn’t work, I love you.”</p>
+    <p>“It will work,” she said, dropping her arms to her sides. “I believe in you. Now, I just add water, right?”</p>
+    <p>Lily's mother had covered the inside of the house in ice when she moved in—floor, walls, ceiling, even some furniture—and yet somehow, the pipes never froze. Pipaluk's work. Emma couldn’t claim to understand everything he did, but he knew his science, and the water flowed freely when she turned on the faucet. She filled a glass, turned off the water, climbed down from the stool, moved the stool toward the soup and plastic banana on the counter, and climbed up again.</p>
+    <p>“Oh.”</p>
+    <p>“Everything okay?” she asked, sticking her finger in the water and shaking a single drop onto the banana.</p>
+    <p>“Oh!”</p>
+    <p>She glanced over her shoulder at Pipaluk. He was trembling from head to toe, his pink eyes wider than ever.</p>
+    <p>“Pipaluk?”</p>
+    <p>A series of loud pops sounded as the banana bounced across the counter, dropping platters of food everywhere it touched and filling the kitchen with the aroma of turkey, ham, green bean casserole, mashed potatoes, and more assorted holiday foods. Pipaluk, too, bounced in place, reaching higher heights with each jump.</p>
+    <p>“Pipaluk?”</p>
+    <p>“It works!” He landed and raced toward her, grabbing her shoulders and kissing her full on the lips. “It works and I have so much energy and I have to give this to her right now and you’re the best honey!”</p>
+    <p>She was still processing when he bolted out of the kitchen, teasing the rushed syllables apart to form individual words. The potion was supposed to help Lily recover her energy after overdoing it with her magic, so it stood to reason it could give Pipaluk more energy, too.</p>
+    <p>Oh, dear. If he gave her the full vial—</p>
+    <p>“Pipaluk!” she cried, racing after him.</p>
+    <p>Greens and reds decorated the icy blue living room at heights she hadn’t expected, but she couldn’t take the time to appreciate Boris helping her children when Pipaluk was upending the vial over Lily’s mouth. She launched herself at him and tackled him to the floor—too late. The empty vial hit the floor and shattered, and she and Pipaluk landed with a resounding thud.</p>
+    <p>“No!” Pipaluk wailed. “I only had one!”</p>
+    <p>“You gave it all to her!” Emma shrieked.</p>
+    <p>“But it could regenerate if—”</p>
+    <p>Then, to her disbelief, the shards of glass zipped together again, knitting themselves back into a vial filled with a clear liquid.</p>
+    <p>“Yippee!” Pipaluk leaped to his feet, dragging Emma up with him, and danced around the room at a speed that made her head spin. The kids were laughing. Boris looked more confused than ever, from what Emma could see of his blurred face. And then—</p>
+    <p>“What’s going on here?”</p>
+    <p>Pipaluk stopped suddenly. It took a moment for Emma to focus her vision now that she wasn’t in constant motion, but Lily was sitting up, her brow furrowed as her sleepy blue eyes took in the room. They slid across Pipaluk and Emma, frozen in a dip with Emma bent nearly backwards, to Boris, holding the tiny five-year-old girl with curly brown hair up to the mantle, to the little boy with blue hair hanging decorations on the battered Christmas tree. The line between Lily’s black eyebrows deepened.</p>
+    <p>“Isn’t it…July?” she asked, mumbling her words.</p>
+    <p>“Merry Christmas!” Emma proclaimed.</p>
+    <p>Her son leaped to his feet and ran across the room, jumping into Lily’s lap and throwing his arms around her, and her daughter squirmed so violently in Boris’ hands that he had to set her down before she fell. She raced to Lily, too, burying the confused snow witch in exuberant children and ebullient hugs.</p>
+    <p>“Pipaluk, let me up,” Emma reminded him.</p>
+    <p>“Oh. Sorry.” He straightened and pulled her up with him, and she pulled free from him, fixing her scarf.</p>
+    <p>“You need a pick-me-up,” Emma explained to Lily. “And since you gave us a wonderful winter setting, we’re giving you Christmas.”</p>
+    <p>Lily looked no less befuddled. “Then why is he here?” she asked, nodding in Boris’ direction. “And what happened to his nose?”</p>
+    <p>“Uh, you did,” he said, collecting himself and giving her an apologetic smile. “After I broke through your snow globe. Sorry about that.”</p>
+    <p>She stared at him, her expression tight with concentration until the little girl poked her cheek. “He’s Santa Claus!”</p>
+    <p>Her blue eyes shifted down to the two smiling faces in her arms, brown eyes like Emma’s and pink eyes like Pipaluk’s, and her face instantly relaxed into a smile. “Then where’s his beard? And his big, round belly?”</p>
+    <p>“He shaved and went on a diet,” the little boy said in all seriousness.</p>
+    <p>Emma smiled and shook her head. “Did you two bring your presents?”</p>
+    <p>The two children scrambled off Lily’s lap and tumbled into the tunnel amidst a flurry of giggles. Lily pushed the blanket back and turned to put her feet on the floor. “Did you…?” she asked, looking at Pipaluk.</p>
+    <p>He puffed his little chest out with pride. “I did it,” he announced. “It took a few hours and tweaking some calculations, and I had to—”</p>
+    <p>“Before you go into the details, could you give Boris something for his nose?” Emma interrupted.</p>
+    <p>Pipaluk’s chest deflated. “Oh, yes, sorry. Be right back!”</p>
+    <p>“And don’t take too long! The food’s getting cold!” she called after him as he disappeared into the tunnel. “Now, Lily, this is Boris. He’s an author.”</p>
+    <p>“I know,” Lily said, pointing at a book on the coffee table. “He wrote that. I don’t know what Crystal told you, but—”</p>
+    <p>“Let’s get the food dished up,” Emma intervened. “We have soup, turkey, green bean casserole…”</p>
+    <p>She successfully prevented Lily from turning down Boris’ job offer before he could even make it and led the two much taller people to the kitchen, where the plastic banana had covered every surface of the counter in more food than was reasonable for six people to eat, especially since four of them were extremely small, before it helpfully dropped itself into the trash can. Lily took dishes from the cabinets and passed them to Boris, who passed them to Emma, who stood on a kitchen chair and dished food onto each plate. When they reconvened in the living room, her children had finished piling hastily wrapped presents under the disheveled tree, and Pipaluk had brought the medicine he invented years ago for fixing broken bones.</p>
+    <p>Emma ate in silence, content to watch and listen to everybody else enjoying themselves. She and Pipaluk had created Plan C, also known as “Christmas in a Bag,” a few years ago. The calendar Lily unwrapped gave that secret away, but Emma would explain nothing else. It wasn’t magic, no matter how much Lily insisted it looked that way. It was all complex math, obscure science, and a healthy dose of luck.</p>
+    <p>The working Christmas tree lights added a soft yellow glow to the blues and whites of the icy room, splashed with red and green in a chaotic mess of decorations only two young children could create. Lily removed a glove and twirled a finger through the air, creating a soft dusting of constant snowfall, and Boris’ nose healed, although he grew a thick beard as a temporary side effect of the medicine.</p>
+    <p>So, just like any other Christmas, Emma thought happily. Smiles, chaos, and snow. Perfect.</p>
+  </section>
+
+  <footer>
+    <p>The End.</p>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const canvas = document.getElementById('snow');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let W = 0, H = 0, DPR = 1, MAX = 0;
+
+  // Pre-rendered soft glow sprites
+  function makeSprite(r, g, b, soft = true) {
+    const s = 64;
+    const c = document.createElement('canvas');
+    c.width = c.height = s;
+    const x = c.getContext('2d');
+    const grd = x.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    if (soft) {
+      grd.addColorStop(0.00, `rgba(${r},${g},${b},1)`);
+      grd.addColorStop(0.22, `rgba(${r},${g},${b},0.85)`);
+      grd.addColorStop(0.50, `rgba(${r},${g},${b},0.28)`);
+      grd.addColorStop(1.00, `rgba(${r},${g},${b},0)`);
+    } else {
+      grd.addColorStop(0.00, `rgba(255,255,240,1)`);
+      grd.addColorStop(0.15, `rgba(${r},${g},${b},0.9)`);
+      grd.addColorStop(0.40, `rgba(${r},${g},${b},0.2)`);
+      grd.addColorStop(1.00, `rgba(${r},${g},${b},0)`);
+    }
+    x.fillStyle = grd;
+    x.fillRect(0, 0, s, s);
+    return c;
+  }
+
+  const snowSprite = makeSprite(255, 255, 255);
+  const festive = [
+    { glow: makeSprite(46, 170, 90),  spark: makeSprite(120, 230, 150, false) },  // green
+    { glow: makeSprite(205, 40, 55),  spark: makeSprite(255, 110, 110, false) },  // red
+    { glow: makeSprite(225, 170, 45), spark: makeSprite(255, 220, 120, false) },  // gold
+  ];
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    MAX = Math.round(Math.min(7000, (W * H) / 170) * (reduceMotion ? 0.4 : 1));
+  }
+
+  const particles = [];
+  const G = () => H / 3000;           // gravity per frame, scales with height
+  const TERMINAL = () => 0.6 + H / 1400;
+
+  function spawn(p, prefill) {
+    p.size = 14 + Math.pow(Math.random(), 1.6) * 48;
+    p.alpha = 0.6 + Math.random() * 0.4;
+    p.phase = Math.random() * Math.PI * 2;
+    p.swayF = 0.6 + Math.random() * 1.4;
+    p.swayA = 0.2 + Math.random() * 0.8;
+    p.twinkle = 2 + Math.random() * 6;
+    p.color = (Math.random() * 3) | 0;
+    p.term = TERMINAL() * (0.6 + Math.random() * 0.8);
+
+    if (prefill) {
+      // Already drifting down somewhere on screen
+      p.x = Math.random() * W;
+      p.y = Math.random() * H;
+      p.vx = (Math.random() - 0.5) * 0.6;
+      p.vy = p.term;
+    } else {
+      // Launched from the geyser mouth at the bottom centre
+      const g = G();
+      const apex = H * (0.55 + Math.random() * 0.6);        // how high it goes
+      p.x = W / 2 + (Math.random() - 0.5) * Math.min(80, W * 0.08);
+      p.y = H + 10;
+      p.vy = -Math.sqrt(2 * g * apex) * (0.9 + Math.random() * 0.2);
+      // Gaussian-ish horizontal spread so the plume fans across the window
+      const n = (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+      p.vx = n * (W / 110);
+    }
+    return p;
+  }
+
+  function prefill() {
+    particles.length = 0;
+    for (let i = 0; i < MAX; i++) particles.push(spawn({}, true));
+  }
+
+  let last = performance.now();
+  let emitCarry = 0;
+  let t = 0;
+  let timeScale = 1;
+
+  // Once the reader scrolls past the title into the story, ease the snow
+  // into slow motion. Everything (emission, fall, sway, twinkle) scales
+  // together, so density stays the same — it just hangs in the air.
+  const header = document.querySelector('header');
+  const SLOW = 0.12;
+  function targetScale() {
+    const start = header.offsetHeight * 0.35;
+    const end = header.offsetHeight * 0.85;
+    const f = Math.min(Math.max((window.scrollY - start) / (end - start), 0), 1);
+    return 1 + (SLOW - 1) * f;
+  }
+
+  function frame(now) {
+    const raw = Math.min((now - last) / 16.667, 3);
+    last = now;
+    timeScale += (targetScale() - timeScale) * Math.min(1, 0.04 * raw);
+    const k = raw * timeScale;
+    t += k / 60;
+
+    const g = G();
+    const colorStart = H * 0.84;
+    const colorSpan = H * 0.13;
+
+    // Emit to keep the population up
+    const deficit = MAX - particles.length;
+    emitCarry += Math.min(deficit, (MAX / 520) * k);
+    while (emitCarry >= 1 && particles.length < MAX) {
+      particles.push(spawn({}, false));
+      emitCarry -= 1;
+    }
+
+    ctx.clearRect(0, 0, W, H);
+
+    const sparks = [];
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+
+      // Physics
+      if (p.vy < p.term) {
+        p.vy += g * k;
+        if (p.vy > p.term) p.vy = p.term;
+      }
+      const falling = p.vy > 0;
+      p.vx *= Math.pow(falling ? 0.992 : 0.997, k);
+      const sway = falling ? Math.sin(t * p.swayF + p.phase) * p.swayA : 0;
+      p.x += (p.vx + sway) * k;
+      p.y += p.vy * k;
+
+      if (p.y > H + p.size || (falling && (p.x < -80 || p.x > W + 80))) {
+        particles[i] = particles[particles.length - 1];
+        particles.pop();
+        continue;
+      }
+
+      const s = p.size;
+      const hs = s / 2;
+      const f = falling ? Math.min(Math.max((p.y - colorStart) / colorSpan, 0), 1) : 0;
+
+      // White snow body
+      if (f < 1) {
+        ctx.globalAlpha = p.alpha * (1 - f);
+        ctx.drawImage(snowSprite, p.x - hs, p.y - hs, s, s);
+      }
+
+      // Festive colour as it nears the floor
+      if (f > 0) {
+        const tw = Math.sin(t * p.twinkle + p.phase);
+        const glimmer = 0.55 + 0.45 * tw;
+        const fc = festive[p.color];
+        const cs = s * 0.8;
+        ctx.globalAlpha = Math.min(1, p.alpha * f * (0.7 + 0.5 * glimmer));
+        ctx.drawImage(fc.glow, p.x - cs / 2, p.y - cs / 2, cs, cs);
+        if (tw > 0.8) sparks.push(p, f, tw);
+      }
+    }
+
+    // Glints on top
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < sparks.length; i += 3) {
+      const p = sparks[i], f = sparks[i + 1], tw = sparks[i + 2];
+      const a = f * (tw - 0.8) * 5;
+      const ss = p.size * 0.9;
+      const sp = festive[p.color].spark;
+      ctx.globalAlpha = a;
+      ctx.drawImage(sp, p.x - ss / 2, p.y - ss / 2, ss, ss);
+      // tiny four-point star
+      ctx.globalAlpha = a * 0.8;
+      const len = p.size * 0.55;
+      ctx.drawImage(sp, p.x - len, p.y - 1, len * 2, 2);
+      ctx.drawImage(sp, p.x - 1, p.y - len, 2, len * 2);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+
+    requestAnimationFrame(frame);
+  }
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { resize(); prefill(); }, 150);
+  });
+
+  resize();
+  prefill();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -39,15 +39,6 @@
       background-color: transparent;
     }
 
-    #overlayWebP {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  object-fit: contain;
-  z-index: 1;
-  pointer-events: none;
-  background: transparent;
-}
 
     .highlight-text {
       position: absolute;
@@ -222,14 +213,12 @@
 <body>
   <main>
     <section id="intro-section">
-      <video id="overlayAlpha" autoplay loop muted playsinline
+      <video id="overlayAlpha" autoplay loop muted playsinline preload="auto"
        style="background:transparent; display:block; max-width:100%;">
-  <source src="./Desktop0001-0250.webm" type="video/webm">
-</video>
-
-<!-- Fallback element for Safari (animated WebP keeps transparency) -->
-<img id="overlayWebP" src="./Desktop0076.png" alt=""
-     style="display:none; background:transparent; max-width:100%;">
+        <!-- Safari/iOS: HEVC with alpha. Chrome/Firefox skip this and use the WebM. -->
+        <source src="./video/hero-hevc.mov" type='video/quicktime; codecs="hvc1"'>
+        <source src="./video/hero.webm" type="video/webm">
+      </video>
 
       <div class="fade-overlay"></div>
 
@@ -266,8 +255,16 @@
       <div class="previews-container">
 
         <div class="preview-card">
+          <a href="stories/Plan C.html">
+            <img src="images/planc.webp" loading="lazy" decoding="async" alt="Plan C preview">
+            <h2 class="preview-title">Plan C</h2>
+            <p class="preview-description">Katerina Schafer</p>
+          </a>
+        </div>
+
+        <div class="preview-card">
           <a href="stories/Pulp, Faith %26 Truth/index.html">
-            <img src="images/faithtruth.png" alt="Martyr Mary preview">
+            <img src="images/faithtruth.webp" loading="lazy" decoding="async" alt="Martyr Mary preview">
             <h2 class="preview-title">Martyr Mary</h2>
             <p class="preview-description">nü creature</p>
           </a>
@@ -275,7 +272,7 @@
 
      <div class="preview-card">
           <a href="stories/Anonymous.html">
-            <img src="images/anonymous.png" alt="Anonymous preview">
+            <img src="images/anonymous.webp" loading="lazy" decoding="async" alt="Anonymous preview">
             <h2 class="preview-title">Anonymous</h2>
             <p class="preview-description">Serora Ramolefhe</p>
           </a>
@@ -283,7 +280,7 @@
 
          <div class="preview-card">
           <a href="stories/tears.html">
-            <img src="images/tears.png" alt="Theater of Smallness preview">
+            <img src="images/tears.webp" loading="lazy" decoding="async" alt="Theater of Smallness preview">
             <h2 class="preview-title">Theater of Smallness</h2>
             <p class="preview-description">Maryam Farhan</p>
           </a>
@@ -291,56 +288,56 @@
 
         <div class="preview-card">
           <a href="stories/AllForNought.html">
-            <img src="images/allForNought.png" alt="All For Nought preview">
+            <img src="images/allForNought.webp" loading="lazy" decoding="async" alt="All For Nought preview">
             <h2 class="preview-title">All for Nought</h2>
             <p class="preview-description">Marco Etheridge</p>
           </a>
         </div>
         <div class="preview-card">
           <a href="stories/visceraStory.html">
-            <img src="images/viscera.png" alt="Viscera preview">
+            <img src="images/viscera.webp" loading="lazy" decoding="async" alt="Viscera preview">
             <h2 class="preview-title">Viscera</h2>
             <p class="preview-description">Alexandra Cipriani</p>
           </a>
         </div>
         <div class="preview-card">
           <a href="stories/TheShadowsofOurMinds.html">
-            <img src="images/ShadowsofMinds.png" alt="The Shadows of Our Minds preview">
+            <img src="images/ShadowsofMinds.webp" loading="lazy" decoding="async" alt="The Shadows of Our Minds preview">
             <h2 class="preview-title">The Shadows of Our Minds</h2>
             <p class="preview-description">Claudia Wysocky</p>
           </a>
         </div>
         <div class="preview-card">
           <a href="stories/Subject Impermanence.html">
-            <img src="images/Subject.png" alt="Subject Impermanence preview">
+            <img src="images/Subject.webp" loading="lazy" decoding="async" alt="Subject Impermanence preview">
             <h2 class="preview-title">Subject Impermanence</h2>
             <p class="preview-description">Soramimi Hanarejima</p>
           </a>
         </div>
         <div class="preview-card">
           <a href="stories/Set Forth Strange Gods.html">
-            <img src="images/setforth.png" alt="Set Forth Strange Gods preview">
+            <img src="images/setforth.webp" loading="lazy" decoding="async" alt="Set Forth Strange Gods preview">
             <h2 class="preview-title">Set Forth Strange Gods</h2>
             <p class="preview-description">J.W. Wood</p>
           </a>
         </div>
         <div class="preview-card">
           <a href="stories/BetweenTheCommute.html">
-            <img src="images/BetweenCommute.png" alt="Between the Commute and the Dream preview">
+            <img src="images/BetweenCommute.webp" loading="lazy" decoding="async" alt="Between the Commute and the Dream preview">
             <h2 class="preview-title">Between the Commute and the Dream</h2>
             <p class="preview-description">Abdullah Rahman</p>
           </a>
         </div>
         <div class="preview-card">
           <a href="stories/Shells.html">
-            <img src="images/ShellsofLost.png" alt="Shells of the Lost preview">
+            <img src="images/ShellsofLost.webp" loading="lazy" decoding="async" alt="Shells of the Lost preview">
             <h2 class="preview-title">Shells of the Lost</h2>
             <p class="preview-description">Jeannie Marschall</p>
           </a>
         </div>
         <div class="preview-card">
           <a href="stories/LanguageOfDreams.html">
-            <img src="images/LOD.png" alt="The Language of Dreams preview">
+            <img src="images/LOD.webp" loading="lazy" decoding="async" alt="The Language of Dreams preview">
             <h2 class="preview-title">The Language of Dreams</h2>
             <p class="preview-description">Claudia Wysocky</p>
           </a>
@@ -348,7 +345,7 @@
 
         <div class="preview-card">
           <a href="stories/burn%20after%20reading.html">
-            <img src="images/burn.png" alt="Burn After Reading preview">
+            <img src="images/burn.webp" loading="lazy" decoding="async" alt="Burn After Reading preview">
             <h2 class="preview-title">Burn After Reading</h2>
             <p class="preview-description">D. Lore</p>
           </a>
@@ -356,7 +353,7 @@
       
         <div class="preview-card">
           <a href="stories/-457.9F.html">
-            <img src="images/ice.png" alt="-457.9 preview">
+            <img src="images/ice.webp" loading="lazy" decoding="async" alt="-457.9 preview">
             <h2 class="preview-title">-457.9 F</h2>
             <p class="preview-description">D. Lore</p>
           </a>
@@ -364,7 +361,7 @@
       
         <div class="preview-card">
           <a href="stories/tree.html">
-            <img src="images/tree.png" alt="Where Should I Put This Tree Preview">
+            <img src="images/tree.webp" loading="lazy" decoding="async" alt="Where Should I Put This Tree Preview">
             <h2 class="preview-title">Where Should I Put This Tree?</h2>
             <p class="preview-description">D. Lore</p>
           </a>
@@ -488,33 +485,6 @@
       overlay.style.opacity = Math.min(Math.max(progress, 0), 1).toFixed(2);
     });
   </script>
-<script>
-  // Heuristic: Safari (desktop & iOS) detection
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-  if (isSafari) {
-    // Hide video (Safari lacks WebM alpha), show animated WebP
-    const vid = document.getElementById('overlayAlpha');
-    const img = document.getElementById('overlayWebP');
-    if (vid && img) {
-      vid.style.display = 'none';
-      img.style.display = 'block';
-    }
-  }
-</script>
-<script>
-  const isIOS = /iP(hone|ad|od)/.test(navigator.platform)
-    || (navigator.userAgent.includes('Mac') && 'ontouchend' in document); // iPad desktop mode
-
-  const vid = document.getElementById('overlayAlpha');
-  const img = document.getElementById('overlayWebP');
-
-  if (isIOS) {
-    if (vid) vid.style.display = 'none';
-    if (img) img.style.display = 'block';
-  }
-</script>
-
 </body>
 </html>
 
