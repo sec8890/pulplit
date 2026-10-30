@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gods of Circularity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #f0e0c2;
+    --halo: rgba(20, 10, 4, 0.8);
+  }
+  body[data-theme="part1"]    { --ink: #efe4cf; --halo: rgba(0, 0, 0, 0.85); }
+  body[data-theme="part2"]    { --ink: #f5f2ea; --halo: rgba(2, 4, 14, 0.9); }
+  body[data-theme="part3"]    { --ink: #141518; --halo: rgba(236, 237, 240, 0.8); }
+  body[data-theme="part4"]    { --ink: #130602; --halo: rgba(255, 196, 130, 0.55); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #2b1b11; }
+  body {
+    color: var(--ink);
+    font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+    font-size: 1.25rem;
+    line-height: 1.65;
+    overflow-x: hidden;
+    transition: color 1.4s ease;
+  }
+
+  canvas.bg {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    opacity: 0;
+    transition: opacity 1.6s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  canvas.bg.on { opacity: 1; }
+
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: 0 16px;
+    container-type: inline-size;
+    text-shadow: 0 1px 2px var(--halo), 0 0 18px var(--halo);
+    transition: text-shadow 1.4s ease;
+  }
+
+  /* Type and indents are scaled from the PDF: 11pt text on a 468pt-wide page,
+     so every --x (percent of the column) lands where it does on the page. */
+  header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  h1 {
+    font-weight: 700;
+    font-size: clamp(2rem, 6cqi, 3.4rem);
+    line-height: 1.12;
+  }
+
+  section {
+    min-height: 100vh;
+    padding: 30vh 0 40vh;
+    font-size: max(15px, 2.45cqi);
+    line-height: 1.36;
+  }
+  h2 {
+    font-size: 1em;
+    font-weight: 400;
+    margin-bottom: 0.86em;
+  }
+  section p,
+  section .multi {
+    margin-bottom: 0.86em;
+    padding-left: calc(var(--x) * 1%);
+  }
+  section .multi {
+    position: relative;
+    min-height: 1.36em;
+  }
+  .multi .pc {
+    position: absolute;
+    top: 0;
+    left: calc(var(--x) * 1%);
+    white-space: pre;
+  }
+  /* too narrow for the spread layout: let the pieces flow and wrap */
+  .multi.flow .pc {
+    position: static;
+    white-space: normal;
+  }
+  .multi.flow .pc + .pc::before { content: "  "; white-space: pre; }
+</style>
+</head>
+<body data-theme="prelude">
+  <canvas class="bg on" id="soil"></canvas>
+  <canvas class="bg" id="sky"></canvas>
+  <canvas class="bg" id="storm"></canvas>
+
+  <main>
+    <header data-section="prelude">
+      <h1>And So The Gods of Circularity Smiled Down Upon The Earth</h1>
+    </header>
+
+    <section data-section="prelude">
+      <h2><em>Prelude.</em></h2>
+      <p style="--x:0.00">The wyrm feels</p>
+      <p style="--x:0.00">a hunger</p>
+      <p style="--x:0.00">that spans</p>
+      <p style="--x:0.00">from the points of its fangs</p>
+      <p style="--x:0.00">to the tip of its tail.</p>
+      <p style="--x:0.00">It squirms around</p>
+      <p style="--x:0.00">blindly, searching for</p>
+      <p style="--x:0.00">something to plug up its throat.</p>
+      <p style="--x:0.00">And then,</p>
+      <p style="--x:0.00">its snout meets a</p>
+      <p style="--x:0.00">solid.</p>
+      <p style="--x:0.00">Jaws expand, teeth bared</p>
+      <p style="--x:0.00">as it swallows</p>
+      <p style="--x:0.00">something thin, scaly, long.</p>
+      <p style="--x:0.00">Slitted eyes blink</p>
+      <p style="--x:0.00">at the length of its body</p>
+      <p style="--x:0.00">looped back around</p>
+      <p style="--x:0.00">to itself.</p>
+    </section>
+    <section data-section="part1">
+      <h2><em>I.</em></h2>
+      <p style="--x:0.00">Let me begin with a story.</p>
+      <p style="--x:7.69">There once was a sparrow / in a society of sparrows.</p>
+      <p style="--x:7.69">In feather and breezes, they lived / quite pleasant lives.</p>
+      <p style="--x:7.69">Food / was never a concern; / there were mealworms abound / to goad into their beaks.</p>
+      <p style="--x:7.69">And so / life was good.</p>
+      <p style="--x:7.69">But a sparrow, the sparrow, / our sparrow, in a society of sparrows, / felt a distinct emptiness.</p>
+      <p style="--x:7.69">Yes, an emptiness, the kind that starts as / just a pinprick in the heart / but feeds on all around it, / consuming the organs until / there was nothing left but the hole.</p>
+      <p style="--x:7.69">It sought out guidance, / but it was met with / reassurances that every creature / held such an emptiness / within their breast.</p>
+      <p style="--x:7.69">Even the mealworms, simple as they were, / held a hole– / that was why / they could be tempted into beaks / and swallowed up.</p>
+      <p style="--x:7.69">But still / this left our sparrow befuddled.</p>
+      <p style="--x:7.69">Surely, / there had to be a way to rid of the emptiness?</p>
+      <p style="--x:7.69">Shelter and food and societies / could do nothing but distract, / and in the next moment, / the emptiness would rear its head / and forcibly steal the focus / of our sparrow’s thoughts.</p>
+      <p style="--x:7.69">Day and night passed, / and our sparrow did as sparrows do: / eat, preen, sleep– / eat, preen, sleep– / eat, preen, sleep.</p>
+      <p style="--x:7.69">Our sparrow was distraught / and felt nothing at all / but the emptiness within.</p>
+      <p style="--x:7.69">Driven to desperation, / it wandered away at night / feet and wings guiding it in circles.</p>
+      <p style="--x:7.69">Eat, preen, sleep– / but food had lost all its meaning and taste– / there was little purpose in preserving feathers– / and its bare feet guided it away in the depths of night.</p>
+      <p style="--x:7.69">Day, night, day, night, / until it came upon a creature– / a beautiful creature, / with paws dipped in ebony tar, / a pelt that had stolen the color from fields of russet, / and snow that clung to the tip of its bushy tail, its muzzle, its underbelly.</p>
+      <p style="--x:7.69">Its breath was rank with the scent of rotting flesh, / and yet the manner in which the sun shone off those / pearly stalactites and stalagmites / only added to its allure.</p>
+      <p style="--x:7.69">Our sparrow was curious, / and so conversed with the fair creature.</p>
+      <p style="--x:7.69">“I have felt an emptiness,” confessed our sparrow, / “and day by day it has only grown / to eat up the rest of me– / heart and lungs–liver and intestines–throat and tongue.</p>
+      <p style="--x:7.69">I fear that it will eat me / until nothing remains.”</p>
+      <p style="--x:7.69">And so the creature replied, / “I have felt likewise, / but I’ve an idea.</p>
+      <p style="--x:7.69">If you leap into my mouth, / perhaps we can fill our holes / with companionship.”</p>
+      <p style="--x:7.69">And our desperate, little sparrow / felt overjoyed in this shared moment,  / thanked the fiery creature quite profusely, / as was always taught of it, and leapt into its maw.</p>
+      <p style="--x:7.69">And in the next moment, / before our sparrow could even think to be anything / but ecstatic, / the cave closed in, / and nothing was left of our sparrow / but a bloody pulp that slid down the fair creature’s throat, / tasting like dew drops after a drought.</p>
+      <p style="--x:7.69">The other sparrows would leer and mock, / asking how one was so foolish as to not know better, / to never trust beautiful creatures.</p>
+      <p style="--x:7.69">But they do not understand / that the beautiful creature had not lied, / and that it, too, would be tempted into the claws / of a brown beast, far larger than it was.</p>
+      <p style="--x:7.69">That beast, too, had a hole / that would grow and grow and grow until / it left nothing but a corpse.</p>
+      <p style="--x:7.69">Then the mealworms, in their insatiable emptiness, / would swarm the body / before finding their way / into beaks.</p>
+      <p style="--x:7.69">And so it goes.</p>
+    </section>
+    <section data-section="part2">
+      <h2><em>II.</em></h2>
+      <p style="--x:0.00">Let us transition, now, to an idea.</p>
+      <div class="multi"><span class="pc" style="--x:9.44">There are a thousand somethings in the world,</span><span class="pc" style="--x:70.98">but only one type of nothing.</span></div>
+      <div class="multi"><span class="pc" style="--x:9.84">Nothing exists</span><span class="pc" style="--x:70.94">as a contrast to something:</span></div>
+      <p style="--x:40.84">the space between the stars,</p>
+      <p style="--x:34.15">the hole formed from a rip in one’s jeans–</p>
+      <p style="--x:37.77">the gaping emptiness from within,</p>
+      <p style="--x:37.94">the space enclosed within a straw.</p>
+      <div class="multi"><span class="pc" style="--x:8.21">Together, they form</span><span class="pc" style="--x:85.13">a yin and yang,</span></div>
+      <p style="--x:44.32">two opposing forces</p>
+      <p style="--x:38.91">forever contrasting one another.</p>
+      <div class="multi"><span class="pc" style="--x:9.29">But that isn’t right,</span><span class="pc" style="--x:93.90">is it?</span></div>
+      <div class="multi"><span class="pc" style="--x:9.64">Because nothing is defined</span><span class="pc" style="--x:71.18">as an absence of something–</span></div>
+      <p style="--x:39.98">but an absence is still a <em>thing</em>.</p>
+      <div class="multi"><span class="pc" style="--x:10.07">Definitions can only apply</span><span class="pc" style="--x:79.30">to an existing idea–</span></div>
+      <p style="--x:42.79">something in existence.</p>
+      <div class="multi"><span class="pc" style="--x:9.00">So nothingness and something</span><span class="pc" style="--x:70.54">are almost the same, in a way.</span></div>
+      <div class="multi"><span class="pc" style="--x:10.07">Yet the contrast</span><span class="pc" style="--x:86.99">still stands:</span></div>
+      <p style="--x:44.54">same and different–</p>
+      <p style="--x:40.08">everything wrapped into one,</p>
+      <p style="--x:25.49">fingers interlocked, palms pressed flush against one another,</p>
+      <p style="--x:32.85">a sweat coating skin, reminders of humanity,</p>
+      <p style="--x:38.62">and in between sits a black hole,</p>
+      <p style="--x:38.94">warping something and nothing</p>
+      <p style="--x:48.89">in tandem.</p>
+      <div class="multi"><span class="pc" style="--x:8.11">And so</span><span class="pc" style="--x:92.73">it goes:</span></div>
+      <div class="multi"><span class="pc" style="--x:21.02">something,</span><span class="pc" style="--x:36.40">then nothing,    then something,</span><span class="pc" style="--x:74.87">then nothing</span></div>
+      <p style="--x:47.39">over and over</p>
+      <p style="--x:45.43">until it transforms</p>
+      <p style="--x:21.23">into something and something and something, something, something.</p>
+      <div class="multi"><span class="pc" style="--x:9.27">Something and something,</span><span class="pc" style="--x:78.50">following each other,</span></div>
+      <p style="--x:31.05">contrasting each other, growing from each other,</p>
+      <p style="--x:39.86">tearing away from each other.</p>
+      <div class="multi"><span class="pc" style="--x:23.89">Something</span><span class="pc" style="--x:39.27">and nothing</span><span class="pc" style="--x:54.66">and nothing</span><span class="pc" style="--x:70.04">and something</span></div>
+      <p style="--x:41.78">falling, spiraling, twirling</p>
+      <p style="--x:40.47">through the air like ribbons–</p>
+      <p style="--x:35.61">shadow and light forming a dichotomy</p>
+      <p style="--x:33.30">over and over and over and over and over–!</p>
+      <div class="multi"><span class="pc" style="--x:10.88">It’s rings of something</span><span class="pc" style="--x:80.11">all the way down.</span></div>
+    </section>
+    <section data-section="part3">
+      <h2><em>III.</em></h2>
+      <p style="--x:0.00">Let me describe to you an image.</p>
+      <p style="--x:7.69">The sky is hazy with clouds,</p>
+      <p style="--x:15.38">orange and purple and blue</p>
+      <p style="--x:23.08">hues color it, wisping around</p>
+      <p style="--x:30.77">that great ball of light</p>
+      <p style="--x:38.46">we call the sun.</p>
+      <p style="--x:7.69">Beneath it there lies</p>
+      <p style="--x:15.38">greens of every shade</p>
+      <p style="--x:23.08">stacked atop a rough brown–</p>
+      <p style="--x:30.77">that of tree trunks or rich soil–</p>
+      <p style="--x:38.46">and even further sits a thick rush</p>
+      <p style="--x:46.15">of frothy, white water.</p>
+      <p style="--x:7.69">Aqua slithers</p>
+      <p style="--x:15.38">past rocks, down cliffs, across mud,</p>
+      <p style="--x:23.08">dragging along silt and salmon.</p>
+      <p style="--x:7.69">Yes, salmon–</p>
+      <p style="--x:15.38">those orange-fleshed fish with their hooked jaws,</p>
+      <p style="--x:23.08">tasting the water that was once briney and now clear.</p>
+      <p style="--x:7.69">From here they had come–</p>
+      <p style="--x:15.38">to the blues of the oceans they fled–</p>
+      <p style="--x:23.08">and back they return,</p>
+      <p style="--x:30.77">stomachs filled with spawn.</p>
+      <p style="--x:7.69">In droves they press upstream,</p>
+      <p style="--x:15.38">marking the whites of the river</p>
+      <p style="--x:23.08">with the silver glint of scales;</p>
+      <p style="--x:30.77">some might have sworn that</p>
+      <p style="--x:38.46">there were more fish than water.</p>
+      <p style="--x:7.69">Journeying upward has perils abound–</p>
+      <p style="--x:15.38">creatures far more vicious and hungry,</p>
+      <p style="--x:23.08">waterfalls that they must climb,</p>
+      <p style="--x:30.77">and ultimately,</p>
+      <p style="--x:38.46">they will reach their final resting place</p>
+      <p style="--x:46.15">after the birth of their children.</p>
+      <p style="--x:7.69">Yet still,</p>
+      <p style="--x:15.38">they travel.</p>
+      <p style="--x:7.69">Perhaps the salmon are musing–</p>
+      <p style="--x:15.38">thinking to themself about</p>
+      <p style="--x:23.08">what future will come of their children</p>
+      <p style="--x:30.77">and not for themself–</p>
+      <p style="--x:38.46">they know that</p>
+      <p style="--x:46.15">which awaits them at their trails’ end.</p>
+      <p style="--x:7.69">And despite it all,</p>
+      <p style="--x:15.38">none of them will ever</p>
+      <p style="--x:23.08">dare to turn back.</p>
+      <p style="--x:7.69">Thus, they go</p>
+      <p style="--x:15.38">forward, forward, forward,</p>
+      <p style="--x:23.08">and when their children are born,</p>
+      <p style="--x:30.77">they will be greeted with the decaying flesh</p>
+      <p style="--x:38.46">of the previous generation.</p>
+      <p style="--x:7.69">And those children will shift</p>
+      <p style="--x:15.38">from river to ocean,</p>
+      <p style="--x:23.08">calling the salt and brine their home</p>
+      <p style="--x:30.77">until they too return</p>
+      <p style="--x:38.46">to their birthing place and tomb</p>
+      <p style="--x:46.15">to welcome their own spawn.</p>
+    </section>
+    <section data-section="part4">
+      <h2><em>IV.</em></h2>
+      <p style="--x:0.00">Let me finish by sharing a feeling.</p>
+      <p style="--x:7.69">An energy resides</p>
+      <p style="--x:7.69">low in the spine,</p>
+      <p style="--x:7.69">resting right at the base,</p>
+      <p style="--x:44.58">coiled like a spring.</p>
+      <p style="--x:84.73">It sits and waits,</p>
+      <p style="--x:71.43">and waits and waits and waits,</p>
+      <p style="--x:76.78">a string pulled tight until</p>
+      <p style="--x:50.29">release.</p>
+      <p style="--x:7.69">When the moment comes,</p>
+      <p style="--x:7.69">the body need not think,</p>
+      <p style="--x:7.69">for the energy shoots up the spine,</p>
+      <p style="--x:7.69">zipping through webs of nerves</p>
+      <p style="--x:40.96">and granting life to muscle.</p>
+      <p style="--x:80.76">Pushes a leg to kick,</p>
+      <p style="--x:80.17">jerking away an arm,</p>
+      <p style="--x:87.15">jumping back</p>
+      <p style="--x:40.28">at the slightest touch of pain.</p>
+      <p style="--x:7.69">This energy shoots outward</p>
+      <p style="--x:7.69">in hopes of survival,</p>
+      <p style="--x:7.69">and once it is done,</p>
+      <p style="--x:7.69">it creates a halo about the head</p>
+      <p style="--x:7.69">before dissipating into air,</p>
+      <p style="--x:7.69">while a new energy builds</p>
+      <p style="--x:7.69">and builds and builds,</p>
+      <p style="--x:7.69">ready to be fired</p>
+      <p style="--x:48.50">once again.</p>
+      <p style="--x:80.76">Each time a struggle</p>
+      <p style="--x:80.63">to keep nerves firing</p>
+      <p style="--x:73.65">in order to fire more nerves,</p>
+      <p style="--x:70.19">fighting again and again for life</p>
+      <p style="--x:73.71">until those electric impulses</p>
+      <p style="--x:44.14">dull and fizzle away.</p>
+      <p style="--x:7.69">Life for the sake of being alive–</p>
+      <p style="--x:39.66">to live and live and live again.</p>
+      <p style="--x:79.95">To breathe in cool air</p>
+      <p style="--x:57.28">and feel the sands falling between our fingers</p>
+      <p style="--x:67.13">and taste the prayers on our tongue</p>
+      <p style="--x:36.33">for more time, more time, more time.</p>
+      <p style="--x:7.69">We are alive, asleep, dead, conscious,</p>
+      <p style="--x:7.69">a thousand things,</p>
+      <p style="--x:7.69">and yet we strive</p>
+      <p style="--x:7.69">for life</p>
+      <p style="--x:7.69">through shots of electricity</p>
+      <p style="--x:7.69">which will fire</p>
+      <p style="--x:41.36">again and again and again.</p>
+      <p style="--x:82.00">Life for life for life</p>
+      <p style="--x:57.14">expressed through those involuntary motions,</p>
+      <p style="--x:75.15">the movement of impulses</p>
+      <p style="--x:41.75">to jerk away from danger.</p>
+    </section>
+    <section data-section="postlude">
+      <h2><em>Postlude.</em></h2>
+      <p style="--x:0.00">The wyrm, now a ring,</p>
+      <p style="--x:0.00">can do nothing but</p>
+      <p style="--x:0.00">slither in circles,</p>
+      <p style="--x:0.00">feeling the weight of its own scales</p>
+      <p style="--x:0.00">upon its tongue.</p>
+      <p style="--x:0.00">And when it peers upward,</p>
+      <p style="--x:0.00">its gaze is met with</p>
+      <p style="--x:0.00">a thousand other wyrms,</p>
+      <p style="--x:0.00">choking on their own, thin bodies,</p>
+      <p style="--x:0.00">forming yet another circle,</p>
+      <p style="--x:0.00">revolving about nothing.</p>
+      <p style="--x:0.00">And if the wyrm could see more,</p>
+      <p style="--x:0.00">see further, see beyond,</p>
+      <p style="--x:0.00">it would see</p>
+      <p style="--x:0.00">an infinite number of wyrm-rings,</p>
+      <p style="--x:0.00">posited in such a way that</p>
+      <p style="--x:0.00">it formed a bigger circle,</p>
+      <p style="--x:0.00">which formed yet another, larger circle,</p>
+      <p style="--x:0.00">and another,</p>
+      <p style="--x:0.00">and another,</p>
+      <p style="--x:0.00">forever.</p>
+      <p style="--x:0.00">And each circle</p>
+      <p style="--x:0.00">was almost its own wyrm,</p>
+      <p style="--x:0.00">chasing the tip of its tail,</p>
+      <p style="--x:0.00">through the nothingness of space.</p>
+    </section>
+  </main>
+
+  <script src="gods.js"></script>
+  <script>
+    // Keep each line at its PDF indent when it fits; otherwise slide it left
+    // just enough to fit, and only wrap when the line is wider than the column.
+    (() => {
+      const measure = el => {
+        const r = document.createRange();
+        r.selectNodeContents(el);
+        return r.getBoundingClientRect().width;
+      };
+      function layout() {
+        document.querySelectorAll('section p').forEach(p => {
+          p.style.paddingLeft = '';
+          const W = p.clientWidth;
+          const want = parseFloat(p.style.getPropertyValue('--x')) / 100 * W;
+          p.style.paddingLeft = '0px';
+          const w = measure(p);
+          p.style.paddingLeft = Math.max(0, Math.min(want, W - w - 1)) + 'px';
+        });
+        document.querySelectorAll('.multi').forEach(line => {
+          line.classList.remove('flow');
+          const W = line.clientWidth, gap = 12;
+          const pcs = [...line.children];
+          const widths = pcs.map(measure);
+          const pos = pcs.map(p => parseFloat(p.style.getPropertyValue('--x')) / 100 * W);
+          for (let i = 1; i < pcs.length; i++) pos[i] = Math.max(pos[i], pos[i - 1] + widths[i - 1] + gap);
+          const n = pcs.length - 1;
+          pos[n] = Math.min(pos[n], W - widths[n]);
+          for (let i = n - 1; i >= 0; i--) pos[i] = Math.min(pos[i], pos[i + 1] - gap - widths[i]);
+          if (pos[0] < 0) { line.classList.add('flow'); pcs.forEach(p => (p.style.left = '')); return; }
+          pcs.forEach((p, i) => (p.style.left = pos[i] + 'px'));
+        });
+      }
+      layout();
+      document.fonts && document.fonts.ready.then(layout);
+      let t;
+      addEventListener('resize', () => { clearTimeout(t); t = setTimeout(layout, 120); });
+    })();
+  </script>
+</body>
+</html>
