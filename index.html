@@ -2,16 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pulp Press</title>
   <style>
+    :root {
+      --ink: #111;
+      --ink-soft: #4a4a4a;
+      --sage: rgb(87, 144, 87);
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       overflow-x: hidden;
+      background: #fff;
     }
 
     body {
-      font-family: monospace;
+      font-family: var(--sans);
+      font-weight: 300;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
     }
 
     main {
@@ -19,66 +31,77 @@
     }
 
     section {
-      width: 100vw;
+      width: 100%;
       min-height: 100vh;
       position: relative;
     }
 
     #intro-section {
-      background-image: url('paper.png');
-      background-size: cover;
-      background-position: center;
+      background: #fff;
       overflow: hidden;
     }
 
     #sketch-section {
-      background-color: rgb(87, 144, 87);
+      background-color: var(--sage);
     }
 
     #neon-section {
       background-color: transparent;
     }
 
+    /* ---------- Intro ---------- */
+
+    #slime-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .press-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 300;
+      font-size: 1.05rem;
+      letter-spacing: 0.5em;
+      padding-left: 0.5em; /* balance trailing letter-spacing */
+      color: #0f1f0d;
+      /* faint halo keeps it legible over both the dark cavity and the highlights */
+      text-shadow: 0 0 6px rgba(220, 240, 210, 0.55);
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 1.4s ease;
+      pointer-events: none;
+    }
 
     .highlight-text {
       position: absolute;
       background-color: black;
       color: lightgoldenrodyellow;
-      font-family: monospace;
+      font-family: var(--sans);
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
       padding: 0.5em 1em;
-      border-radius: 4px;
-      font-weight: normal;
+      border-radius: 2px;
       z-index: 3;
       pointer-events: none;
-      mix-blend-mode: multiply;
-      opacity: 0.9;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 1s ease, transform 1s ease;
     }
 
-    .top-right {
-      top: 100px;
-      right: 200px;
-    }
+    .top-right   { top: 14vh; right: 10vw; transition-delay: 0.2s; }
+    .bottom-left { top: 24vh; left: 8vw;   transition-delay: 0.6s; }
+    .bottom-right{ bottom: 22vh; right: 14vw; transition-delay: 1s; }
 
-    .bottom-left {
-      top: 190px;
-      left: 120px;
-    }
-
-    .bottom-right {
-      top: 300px;
-      left: 1150px;
-    }
-
-    video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: contain;
-      z-index: 1;
-      pointer-events: none;
-    }
+    .revealed .press-label { opacity: 1; }
+    .revealed .highlight-text { opacity: 0.9; transform: none; }
+    .revealed .scroll-link { opacity: 1; }
 
     .fade-overlay {
       position: absolute;
@@ -93,7 +116,7 @@
       pointer-events: none;
     }
 
-    canvas {
+    .p5Canvas {
       position: fixed;
       top: 0;
       left: 0;
@@ -106,119 +129,172 @@
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      color: white;
-      font-family: monospace;
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
       text-decoration: none;
       z-index: 5;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 0.5em 1em;
-      border-radius: 6px;
+      opacity: 0;
+      transition: opacity 1s ease 1.4s;
     }
 
-.about-container, .works-container {
-  max-width: 1000px;
-  margin: 4em auto;
-  padding: 2em;
-  position: relative; /* or remove entirely */
-  z-index: 6;
-}
+    @media (max-width: 700px) {
+      .top-right    { top: 12vh; right: 16px; }
+      .bottom-left  { top: auto; bottom: 20vh; left: 16px; }
+      .bottom-right { bottom: 13vh; right: 16px; }
+    }
 
-.about-heading {
-  font-size: 3em;
-  font-family: monospace;
-  color: black
-}
+    /* ---------- About / Works ---------- */
 
-.about-paragraph {
-  font-family: monospace;
-  font-size: 1em;
-  line-height: 2.0;
-  color: rgb(0, 0, 0);
-  background: rgba(215, 215, 215, 0.4);
-  padding: 4em;
-  border-radius: 8px;
-}
+    .about-container, .works-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      z-index: 6;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      column-gap: 4rem;
+      align-items: start;
+    }
 
-.works-heading {
-  font-size: 3em;
-  font-family: monospace;
-  color: black;
-  margin-bottom: 0.5em;
-}
+    .about-heading, .works-heading {
+      font-family: var(--sans);
+      font-weight: 200;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin: 0;
+      position: sticky;
+      top: 2rem;
+    }
 
-.works-paragraph {
-  font-family: monospace;
-  font-size: 1em;
-  line-height: 2.0;
-  color: black;
-  background: rgba(215, 215, 215, 0.4);
-  padding: 1em;
-  border-radius: 8px;
-}
+    .about-heading { color: #0d1a0d; }
+    .works-heading { color: var(--ink); }
 
+    .about-paragraph {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #0d1a0d;
+      border-top: 1px solid rgba(13, 26, 13, 0.6);
+      padding-top: 1.5rem;
+    }
 
-.previews-container {
-  max-width: 900px;
-  margin: 3em auto;
-  padding: 2em;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2em;
-  z-index: 5;
-  position: relative;
-}
+    .about-paragraph p {
+      margin: 0 0 1.3em;
+      max-width: 60ch;
+    }
 
-.preview-card {
-  background: rgba(255,255,255,0.9);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+    .about-paragraph p:first-child {
+      font-size: clamp(1.3rem, 2.4vw, 1.75rem);
+      line-height: 1.35;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
 
-.preview-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-}
+    .about-paragraph .about-contact {
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.4em;
+    }
 
-.preview-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  display: block;
-}
+    .about-paragraph a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+    }
 
-.preview-card a {
-  color: inherit;
-  text-decoration: none;
-  display: block;
-  padding: 1em;
-}
+    .works-paragraph {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--ink);
+      margin: 0;
+      max-width: 60ch;
+      border-top: 1px solid var(--ink);
+      padding-top: 1.5rem;
+    }
 
-.preview-title {
-  font-size: 1.2em;
-  margin: 0.5em 0;
-  font-family: monospace;
-  color: black;
-}
+    .previews-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem 8rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6rem 3rem;
+      z-index: 5;
+      position: relative;
+    }
 
-.preview-description {
-  font-size: 0.9em;
-  color: #333;
-  font-family: monospace;
-}
+    .preview-card {
+      border-top: 1px solid var(--ink);
+      padding-top: 1rem;
+    }
 
+    .preview-card a {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+
+    .preview-card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      transition: filter 0.4s ease;
+    }
+
+    .preview-card:hover img {
+      filter: saturate(1.25) contrast(1.05);
+    }
+
+    .preview-title {
+      font-family: var(--sans);
+      font-weight: 300;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      letter-spacing: -0.005em;
+      margin: 1rem 0 0.4rem;
+      color: var(--ink);
+      text-decoration: underline 1px transparent;
+      text-underline-offset: 0.25em;
+      transition: text-decoration-color 0.3s ease;
+    }
+
+    .preview-card:hover .preview-title {
+      text-decoration-color: currentColor;
+    }
+
+    .preview-description {
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 0.6rem 0 0;
+    }
+
+    @media (max-width: 760px) {
+      .about-container, .works-container {
+        grid-template-columns: 1fr;
+        row-gap: 2rem;
+        padding: 5rem 16px 2rem;
+      }
+      .about-heading, .works-heading { position: static; }
+      .previews-container { padding: 2rem 16px 5rem; gap: 3rem; grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <main>
     <section id="intro-section">
-      <video id="overlayAlpha" autoplay loop muted playsinline preload="auto"
-       style="background:transparent; display:block; max-width:100%;">
-        <!-- Safari/iOS: HEVC with alpha. Chrome/Firefox skip this and use the WebM. -->
-        <source src="./video/hero-hevc.mov" type='video/quicktime; codecs="hvc1"'>
-        <source src="./video/hero.webm" type="video/webm">
-      </video>
+      <canvas id="slime-canvas" aria-hidden="true"></canvas>
+
+      <div class="press-label">press</div>
 
       <div class="fade-overlay"></div>
 
@@ -227,11 +303,10 @@
       <div class="highlight-text bottom-right">&amp; impossible to describe!</div>
 
       <a href="#sketch-section" class="scroll-link">↓ scroll</a>
-     
     </section>
 
     <section id="sketch-section">
-    <div class="about-container">
+      <div class="about-container">
         <h1 class="about-heading">About</h1>
         <div class="about-paragraph">
           <p>PULP Press is here to bring the best of old pulp magazines into the present, with the aim of reimagining the future.</p>
@@ -239,9 +314,10 @@
           <p>PULP Press is here to push those visions further forward. Through cheap and available storytelling, PULP exists to uproot and expand genre conventions — and to reroute the way we think about our futures. </p>
           <p>We see the visual style of pulp artwork as a key part of the influence that pulp publications had. As a result, we deeply value the importance of presenting the works that we publish in creative ways that take advantage of their medium and the visual tools of the modern world. We hope you’ll come for the presentation as much as the stories themselves.</p>
           <p>PULP Press exists online, but will someday release a physical issue printed on pulp paper. </p>
-          <p>For questions or to submit your work, reach out here: sophiacollender@icloud.com</p>
-          <p>Follow us on Instagram: @pulpppress</p>
-        </div> 
+          <p class="about-contact">For questions or to submit your work, reach out here: <a href="mailto:sophiacollender@icloud.com">sophiacollender@icloud.com</a></p>
+          <p class="about-contact">Follow us on Instagram: <a href="https://www.instagram.com/pulpppress/" target="_blank" rel="noopener">@pulpppress</a></p>
+        </div>
+      </div>
     </section>
 
     <section id="neon-section">
@@ -251,7 +327,7 @@
              PULP is dedicated to presenting stories and ideas in ways that do them justice. As such, each piece that PULP publishes is given its own entirely custom page with a unique design that is tailored specifically for its content. The PULP site is hardcoded, allowing for a good deal of flexibility.
             Flip through our recent publications below! </p>
           </div>
-       
+
       <div class="previews-container">
 
         <div class="preview-card">
@@ -366,7 +442,7 @@
             <p class="preview-description">D. Lore</p>
           </a>
         </div>
-      
+
         <div class="preview-card">
           <a href="stories/-457.9F.html">
             <img src="images/ice.webp" loading="lazy" decoding="async" alt="-457.9 preview">
@@ -374,7 +450,7 @@
             <p class="preview-description">D. Lore</p>
           </a>
         </div>
-      
+
         <div class="preview-card">
           <a href="stories/tree.html">
             <img src="images/tree.webp" loading="lazy" decoding="async" alt="Where Should I Put This Tree Preview">
@@ -383,7 +459,7 @@
           </a>
         </div>
       </div>
-    </section>   
+    </section>
   </main>
 
   <!-- p5.js -->
@@ -471,6 +547,320 @@
     }
   </script>
 
+  <!-- Tidal slime intro (three.js) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+    import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+    const intro = document.getElementById('intro-section');
+    const canvas = document.getElementById('slime-canvas');
+    const pressLabel = document.querySelector('.press-label');
+
+    // Timeline (seconds)
+    const EMERGE_START = 0.5;
+    const EMERGE_DUR = 1.6;
+    const SWISH_DUR = 3.0;
+    const DRAIN_DUR = 2.8;
+    const DRAIN_START = EMERGE_START + EMERGE_DUR + SWISH_DUR;
+    const REVEAL_AT = DRAIN_START + DRAIN_DUR * 0.7;
+    const SETTLE_DUR = 4.0; // tide swings from the back to circling the rim
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const RADIUS = 1.6;
+    const MAX_OPEN_ANGLE = 1.2; // radians: how far the front drains back
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+
+    const scene = new THREE.Scene();
+    // Soft studio reflections so the liquid reads as glassy
+    scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+
+    // Soft studio light, like the rendered video
+    scene.add(new THREE.HemisphereLight(0xf2f7ee, 0x1b2416, 0.7));
+    const key = new THREE.DirectionalLight(0xffffff, 2.2);
+    key.position.set(-3, 4, 5);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xdfeedd, 0.6);
+    fill.position.set(4, -1, 3);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffffff, 1.2);
+    rim.position.set(2, 3, -5);
+    scene.add(rim);
+
+    const SLIME_GREEN = 0x4a8a40;
+
+    const globe = new THREE.Group();
+    globe.scale.setScalar(0);
+    scene.add(globe);
+
+    // ---------- Liquid shell ----------
+    const uniforms = {
+      uTime: { value: 0 },
+      uOpen: { value: 0 },
+      uAlpha: { value: 0 },
+      uTheta0: { value: 0 },
+      uAxis1: { value: new THREE.Vector3(1, 0, 0) },
+      uAxis2: { value: new THREE.Vector3(0, 1, 0) },
+    };
+
+    const NOISE_GLSL = /* glsl */`
+      // Ashima simplex noise
+      vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
+      vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+      vec4 permute(vec4 x){return mod289(((x*34.)+1.)*x);}
+      vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+      float snoise(vec3 v){
+        const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0.,.5,1.,2.);
+        vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
+        vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);
+        vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;
+        i=mod289(i);
+        vec4 p=permute(permute(permute(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));
+        float n_=.142857142857;vec3 ns=n_*D.wyz-D.xzx;
+        vec4 j=p-49.*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);
+        vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.-abs(x)-abs(y);
+        vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);
+        vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;vec4 sh=-step(h,vec4(0.));
+        vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+        vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+        vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+        p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+        vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m=m*m;
+        return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+      }
+    `;
+
+    const LIQUID_GLSL = /* glsl */`
+      uniform float uTime;
+      uniform float uOpen;
+      uniform float uAlpha;
+      uniform float uTheta0;
+      uniform vec3 uAxis1;
+      uniform vec3 uAxis2;
+      varying float vTheta;
+      ${NOISE_GLSL}
+
+      // Sine integral Si(x): the step response of a band-limited signal
+      // (Taylor series near zero, asymptotic expansion further out, blended so it stays smooth)
+      float Si(float x) {
+        float ax = abs(x);
+        float x2 = ax * ax;
+        float near = ax * (1.0 - x2 / 18.0 * (1.0 - x2 / 33.333 * (1.0 - x2 / 58.8 * (1.0 - x2 / 92.57 * (1.0 - x2 / 134.44)))));
+        float inv = 1.0 / max(ax, 1.0);
+        float far = 1.5707963 - cos(ax) * inv * (1.0 - 2.0 * inv * inv) - sin(ax) * inv * inv * (1.0 - 6.0 * inv * inv);
+        return sign(x) * mix(near, far, smoothstep(3.5, 5.0, ax));
+      }
+
+      // A raised tidal plateau of angular radius r0 around an axis. Its front is a band-limited
+      // step, so it rings Gibbs-style on both sides; the ringing is damped to a few soft ripples.
+      float tide(vec3 m, vec3 axis, float r0) {
+        const float K = 12.0; // sharpness of the front / ripple frequency
+        float u = r0 - acos(clamp(dot(m, axis), -1.0, 1.0));
+        float x = K * u;
+        float hard = step(0.0, u);
+        float gibbs = 0.5 + Si(x) / 3.14159265;
+        // Damp the ringing, and exaggerate it a little away from the front (gain is 1 at the front so the step stays continuous)
+        float gain = exp(-abs(x) / 11.0) * (1.0 + 1.6 * smoothstep(1.5, 4.0, abs(x)));
+        return hard + (gibbs - hard) * gain;
+      }
+
+      float swell(vec3 m) {
+        return 0.20 * tide(m, uAxis1, 0.85)
+             + 0.11 * tide(m, uAxis2, 0.6)
+             + 0.10 * tide(m, -uAxis1, 0.7) * (1.0 - uOpen)
+             - 0.09;
+      }
+
+      vec3 displace(vec3 p) {
+        vec3 n = normalize(p);
+        float theta = acos(clamp(n.z, -1.0, 1.0));
+        vec2 perp = length(n.xy) > 1e-5 ? normalize(n.xy) : vec2(1.0, 0.0);
+
+        // The front drains away: the whole surface is dragged back into [alpha, PI]
+        float alpha = uAlpha * (1.0 + 0.08 * snoise(vec3(perp * 1.5, uTime * 0.1)));
+        float t2 = alpha + (3.14159265 - alpha) * (theta - uTheta0) / (3.14159265 - uTheta0);
+
+        // Rolled lip around the opening
+        float s = clamp((t2 - alpha) / 0.45, 0.0, 1.0);
+        float roll = 1.0 - smoothstep(0.0, 1.0, s);
+        float lip = uOpen * (0.08 * sin(s * 3.14159265) - 0.12 * roll * roll);
+        t2 -= uOpen * 0.14 * roll * roll;
+
+        vec3 m = vec3(perp * sin(t2), cos(t2));
+        return m * (1.0 + swell(m) + lip);
+      }
+    `;
+
+    const slimeMat = new THREE.MeshStandardMaterial({
+      color: SLIME_GREEN,
+      roughness: 0.12,
+      metalness: 0,
+      envMapIntensity: 0.45,
+      side: THREE.DoubleSide,
+    });
+
+    slimeMat.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, uniforms);
+      shader.vertexShader = shader.vertexShader
+        .replace('#include <common>', '#include <common>\n' + LIQUID_GLSL)
+        .replace('#include <beginnormal_vertex>', /* glsl */`
+          vec3 baseN = normalize(position);
+          vec3 tA = normalize(cross(baseN, abs(baseN.y) < 0.99 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0)));
+          vec3 tB = cross(baseN, tA);
+          vec3 dP = displace(baseN);
+          vec3 pA = displace(normalize(baseN + tA * 0.006));
+          vec3 pB = displace(normalize(baseN + tB * 0.006));
+          vec3 objectNormal = normalize(cross(pA - dP, pB - dP));
+          vTheta = acos(clamp(baseN.z, -1.0, 1.0));
+        `)
+        .replace('#include <begin_vertex>', 'vec3 transformed = dP;');
+
+      shader.fragmentShader = shader.fragmentShader
+        .replace('#include <common>', '#include <common>\nuniform float uOpen;\nuniform float uTheta0;\nvarying float vTheta;')
+        .replace('#include <clipping_planes_fragment>',
+          '#include <clipping_planes_fragment>\nif (uOpen > 0.0 && vTheta < uTheta0) discard;')
+        .replace('#include <color_fragment>',
+          '#include <color_fragment>\nif (!gl_FrontFacing) diffuseColor.rgb *= 0.5;');
+    };
+
+    // A UV sphere with its pole facing the viewer, so the rim of the opening is a full ring of 256 segments
+    const slimeGeo = new THREE.SphereGeometry(1, 256, 192);
+    slimeGeo.rotateX(Math.PI / 2);
+    const slime = new THREE.Mesh(slimeGeo, slimeMat);
+    slime.frustumCulled = false;
+    globe.add(slime);
+
+    // ---------- PULP wordmark, floating inside ----------
+    const textGroup = new THREE.Group();
+    scene.add(textGroup);
+    const textMat = new THREE.MeshStandardMaterial({ color: 0x5f9a55, roughness: 0.5, metalness: 0, envMapIntensity: 0.2 });
+
+    new FontLoader().load(
+      'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/helvetiker_bold.typeface.json',
+      (font) => {
+        const geo = new TextGeometry('PULP', {
+          font, size: 0.62, height: 0.26, depth: 0.26, curveSegments: 10,
+          bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.022, bevelSegments: 5,
+        });
+        geo.center();
+        textGroup.add(new THREE.Mesh(geo, textMat));
+      }
+    );
+
+    // ---------- Tide axes ----------
+    const swishAxis1 = (t) => new THREE.Vector3(Math.cos(t * 0.28 + 0.6), 0.45 * Math.sin(t * 0.4), 0.7 * Math.sin(t * 0.28 + 0.6)).normalize();
+    const swishAxis2 = (t) => new THREE.Vector3(-Math.sin(t * 0.21 + 1.8), Math.cos(t * 0.21 + 1.8), 0.5 * Math.cos(t * 0.33)).normalize();
+    const circleAxis1 = (t) => new THREE.Vector3(Math.cos(t * 0.22) * 0.9, Math.sin(t * 0.22) * 0.9, 0.3).normalize();
+    const circleAxis2 = (t) => new THREE.Vector3(Math.cos(t * 0.22 + 2.6) * 0.9, Math.sin(t * 0.22 + 2.6) * 0.9, 0.1).normalize();
+    const BACK1 = new THREE.Vector3(0.15, 0.2, -1).normalize();
+    const BACK2 = new THREE.Vector3(-0.3, -0.25, -1).normalize();
+
+    function axesAt(t, drain, settle) {
+      const a1 = swishAxis1(t).lerp(BACK1, drain).lerp(circleAxis1(t), settle);
+      const a2 = swishAxis2(t).lerp(BACK2, drain).lerp(circleAxis2(t), settle);
+      if (a1.lengthSq() < 1e-4) a1.copy(BACK1);
+      if (a2.lengthSq() < 1e-4) a2.copy(BACK2);
+      return [a1.normalize(), a2.normalize()];
+    }
+
+    // ---------- Layout ----------
+    function resize() {
+      const w = intro.clientWidth;
+      const h = intro.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      // Keep the globe (plus swells and spray) in frame on narrow screens
+      const halfFov = THREE.MathUtils.degToRad(camera.fov / 2);
+      const need = RADIUS * 1.75;
+      const distH = need / Math.tan(halfFov);
+      const distW = need / (Math.tan(halfFov) * camera.aspect);
+      camera.position.set(0, 0, Math.max(7.2, distH, distW));
+      camera.lookAt(0, 0, 0);
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // ---------- Animation ----------
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const elastic = (t) => {
+      if (t <= 0 || t >= 1) return Math.min(Math.max(t, 0), 1);
+      return Math.pow(2, -9 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI) / 3.2) + 1;
+    };
+    const clamp01 = (x) => Math.min(Math.max(x, 0), 1);
+
+    let revealed = false;
+    let visible = true;
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }).observe(intro);
+
+    const start = performance.now();
+    const projected = new THREE.Vector3();
+
+    function frame(now) {
+      requestAnimationFrame(frame);
+      if (!visible) return;
+
+      // Reduced motion: skip straight to the revealed state, keep only a slow tide
+      const t = reduceMotion
+        ? DRAIN_START + DRAIN_DUR + SETTLE_DUR + (now - start) / 4000
+        : (now - start) / 1000;
+
+      const emerge = clamp01((t - EMERGE_START) / EMERGE_DUR);
+      // The tide is dragged round the back first, and the front drains just behind it
+      const drain = ease(clamp01((t - DRAIN_START) / DRAIN_DUR));
+      const open = ease(clamp01((t - DRAIN_START - 0.4) / DRAIN_DUR));
+      const settle = ease(clamp01((t - DRAIN_START - DRAIN_DUR * 0.8) / SETTLE_DUR));
+
+      const [a1, a2] = axesAt(t, drain, settle);
+
+      uniforms.uTime.value = t;
+      uniforms.uOpen.value = open;
+      uniforms.uAlpha.value = open * MAX_OPEN_ANGLE;
+      uniforms.uTheta0.value = 0.09 * clamp01(open * 25);
+      uniforms.uAxis1.value.copy(a1);
+      uniforms.uAxis2.value.copy(a2);
+
+      // Grows a little as it opens so the cavity frames the wordmark
+      globe.scale.setScalar(RADIUS * elastic(emerge) * (1 + 0.12 * open));
+
+      textGroup.visible = emerge > 0.9;
+      textGroup.position.set(
+        Math.sin(t * 0.45) * 0.03,
+        0.08 + Math.sin(t * 0.6) * 0.035,
+        -0.15 + 0.35 * open
+      );
+      textGroup.rotation.set(Math.sin(t * 0.4) * 0.04, Math.sin(t * 0.3) * 0.07, Math.sin(t * 0.35) * 0.015);
+
+      // Pin "press" just under the 3D wordmark
+      projected.set(0, -0.48, 0).add(textGroup.position).project(camera);
+      pressLabel.style.left = ((projected.x + 1) / 2) * intro.clientWidth + 'px';
+      pressLabel.style.top = ((1 - projected.y) / 2) * intro.clientHeight + 'px';
+
+      if (!revealed && t >= REVEAL_AT) {
+        revealed = true;
+        intro.classList.add('revealed');
+      }
+
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(frame);
+  </script>
+
   <!-- Lenis -->
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.26/bundled/lenis.min.js"></script>
   <script>
@@ -503,5 +893,3 @@
   </script>
 </body>
 </html>
-
-
