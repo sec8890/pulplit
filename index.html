@@ -103,16 +103,11 @@
     .revealed .highlight-text { opacity: 0.9; transform: none; }
     .revealed .scroll-link { opacity: 1; }
 
-    .fade-overlay {
+    /* Sits above the fixed line network (z-index 4) so the blob and text are never crossed by lines */
+    .intro-stage {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgb(255, 255, 255);
-      opacity: 0;
-      transition: opacity 0.8s ease;
-      z-index: 2;
+      inset: 0;
+      z-index: 5;
       pointer-events: none;
     }
 
@@ -137,6 +132,7 @@
       text-transform: uppercase;
       text-decoration: none;
       z-index: 5;
+      pointer-events: auto;
       opacity: 0;
       transition: opacity 1s ease 0.8s;
     }
@@ -292,17 +288,17 @@
 <body>
   <main>
     <section id="intro-section">
-      <canvas id="slime-canvas" aria-hidden="true"></canvas>
+      <div class="intro-stage">
+        <canvas id="slime-canvas" aria-hidden="true"></canvas>
 
-      <div class="press-label">press</div>
+        <div class="press-label">press</div>
 
-      <div class="fade-overlay"></div>
+        <div class="highlight-text top-right">for the unimaginable!</div>
+        <div class="highlight-text bottom-left">a literary magazine!</div>
+        <div class="highlight-text bottom-right">&amp; impossible to describe!</div>
 
-      <div class="highlight-text top-right">for the unimaginable!</div>
-      <div class="highlight-text bottom-left">a literary magazine!</div>
-      <div class="highlight-text bottom-right">&amp; impossible to describe!</div>
-
-      <a href="#sketch-section" class="scroll-link">↓ scroll</a>
+        <a href="#sketch-section" class="scroll-link">↓ scroll</a>
+      </div>
     </section>
 
     <section id="sketch-section">
@@ -878,17 +874,17 @@
     requestAnimationFrame(raf);
   </script>
 
-  <!-- Fade overlay scroll logic -->
+  <!-- Fade the intro out on scroll -->
   <script>
     window.addEventListener('scroll', () => {
       const intro = document.getElementById('intro-section');
-      const overlay = document.querySelector('.fade-overlay');
+      const stage = document.querySelector('.intro-stage');
       const bottom = intro.getBoundingClientRect().bottom;
 
       const fadeStart = window.innerHeight * 0.5;
       const fadeEnd = window.innerHeight * 0.9;
       const progress = 1 - (bottom - fadeStart) / (fadeEnd - fadeStart);
-      overlay.style.opacity = Math.min(Math.max(progress, 0), 1).toFixed(2);
+      stage.style.opacity = (1 - Math.min(Math.max(progress, 0), 1)).toFixed(2);
     });
   </script>
 </body>
