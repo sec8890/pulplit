@@ -96,8 +96,8 @@
     }
 
     .top-right   { top: 14vh; right: 10vw; transition-delay: 0.2s; }
-    .bottom-left { top: 24vh; left: 8vw;   transition-delay: 0.6s; }
-    .bottom-right{ bottom: 22vh; right: 14vw; transition-delay: 1s; }
+    .bottom-left { top: 24vh; left: 8vw;   transition-delay: 0.4s; }
+    .bottom-right{ bottom: 22vh; right: 14vw; transition-delay: 0.6s; }
 
     .revealed .press-label { opacity: 1; }
     .revealed .highlight-text { opacity: 0.9; transform: none; }
@@ -138,7 +138,7 @@
       text-decoration: none;
       z-index: 5;
       opacity: 0;
-      transition: opacity 1s ease 1.4s;
+      transition: opacity 1s ease 0.8s;
     }
 
     @media (max-width: 700px) {
@@ -567,10 +567,10 @@
     const pressLabel = document.querySelector('.press-label');
 
     // Timeline (seconds)
-    const EMERGE_START = 0.5;
-    const EMERGE_DUR = 1.6;
-    const SWISH_DUR = 3.0;
-    const DRAIN_DUR = 2.8;
+    const EMERGE_START = 0.2;
+    const EMERGE_DUR = 1.0;
+    const SWISH_DUR = 1.5;
+    const DRAIN_DUR = 1.8;
     const DRAIN_START = EMERGE_START + EMERGE_DUR + SWISH_DUR;
     const REVEAL_AT = DRAIN_START + DRAIN_DUR * 0.7;
     const SETTLE_DUR = 4.0; // tide swings from the back to circling the rim
@@ -823,7 +823,7 @@
       const emerge = clamp01((t - EMERGE_START) / EMERGE_DUR);
       // The tide is dragged round the back first, and the front drains just behind it
       const drain = ease(clamp01((t - DRAIN_START) / DRAIN_DUR));
-      const open = ease(clamp01((t - DRAIN_START - 0.4) / DRAIN_DUR));
+      const open = ease(clamp01((t - DRAIN_START - 0.25) / DRAIN_DUR));
       const settle = ease(clamp01((t - DRAIN_START - DRAIN_DUR * 0.8) / SETTLE_DUR));
 
       const [a1, a2] = axesAt(t, drain, settle);
