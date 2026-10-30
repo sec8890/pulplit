@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beer Money</title>
+<style>
+  :root {
+    --ink: #ffffff;
+    --halo: rgba(2, 4, 10, 0.92);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #04060b; }
+  body {
+    color: var(--ink);
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  canvas.bg {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    opacity: 0;
+    transition: opacity 2.4s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  canvas.bg.on { opacity: 1; }
+
+  /* A faint dark band down the middle keeps the white type readable
+     when a wisp drifts directly behind the column. */
+  .veil {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(2, 4, 10, 0.32) 30%,
+      rgba(2, 4, 10, 0.32) 70%,
+      transparent 100%);
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 38rem;
+    margin: 0 auto;
+    padding: 0 16px;
+    text-shadow: 0 1px 2px var(--halo), 0 0 14px var(--halo);
+  }
+
+  header {
+    padding: 14vh 0 0;
+  }
+  h1 {
+    font-weight: 700;
+    font-size: clamp(2.1rem, 7vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+  }
+  .byline {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+  }
+
+  article { padding: 4.5rem 0 30vh; }
+  article p + p { margin-top: 1.1em; }
+  article p.break {
+    text-align: center;
+    margin: 2.6em 0;
+    letter-spacing: 0.5em;
+    opacity: 0.7;
+  }
+  article p:last-child { margin-top: 1.6em; }
+
+
+  @media (max-width: 600px) {
+    body { font-size: 0.9375rem; }
+    .veil { background: rgba(2, 4, 10, 0.3); }
+  }
+</style>
+</head>
+<body>
+  <canvas class="bg" id="city" aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
+
+  <main>
+    <header>
+      <h1>Beer Money</h1>
+      <p class="byline">Keith McGinty</p>
+    </header>
+
+    <article>
+      <p>The shutter screeched as it slid down. Gabe wasn’t sure why he bothered, given the clasps had cracked ages ago, so he couldn’t fasten them to the hooks poking out of the pavement. Not that breaking and entering this dump would be worthwhile, unless a thief was targeting out-of-date beer and adult mags featuring models who had long since retired. Might be worth listing a few on eBay’s retro collectibles section, come to think of it. The pioneering auction platform was enjoying a renaissance after Jeff Bezos blew a fortune indulging his Lando Calrissian fantasy in the clouds above Venus.</p>
+      <p>Gabe hunched his shoulders as rain dripped down the back of his neck. It had been pissing all day, and his socks had taken hours to dry after his commute to work. But he couldn’t afford to dawdle, so he hooded up, fastened his jacket and checked left and right.</p>
+      <p>Despite the risk of drawing attention, he turned on the torch built into his glasses. The streetlamps hadn’t worked for years, and the chances of anyone replacing the bulbs were slim, given the Patriot party had abandoned what was, once upon a time, a thriving city. Survival of the fittest was the thinly veiled message transmitting from 10 Downing Street. Let the thugs and murderers enforce their code of justice in the urban centres, leaving the coppers free to watch over the affluent suburbs.</p>
+      <p>The station entrance was a hundred and fifty meters away, which Gabe could cover in less than a minute. One last scan for threats as he slung his backpack over his shoulder, grimacing as the contents of his bag clinked. Then he set off, head down, maintaining a steady pace. A can skidded across the road behind him, but he didn’t stop to check if someone had kicked it. That would waste valuable seconds.</p>
+      <p>A few yards short of the stairs, Gabe broke into a jog, which he maintained until he reached the top. Approaching the barrier, he bent over so the sensor could read the chip in his glasses. The technology had come a long way, but it wasn’t perfect. After bobbing his head about, the gate opened, but as he straightened up, a couple of teenagers bustled past. He waited until they disappeared onto the platform, then tried again.</p>
+      <p>The train arrived on time for a change, but Gabe kept walking until he reached the last carriage. The doors slid apart, and he peeked inside. To his right, an old man, sporting a bright orange turban, perched on the edge of his seat, gripping the backrest in front of him as if he was riding a roller coaster. Four rows back sat a woman, a few years older than Gabe but with a similar complexion, breastfeeding a baby.</p>
+      <p>Reassured, he boarded and leaned against the glass partition separating the vestibule from the seating area. As the train set off, he tapped his glasses until the book icon appeared and scrolled through his library until he found ‘The City and The City’ by China Miéville. A sci-fi classic about segregation recommended by his uncle. Maybe in the future somebody will write a story inspired by whatever you’d call the system imposed on the UK by the Patriots.</p>
+      <p>Gabe finished the chapter just as the train pulled into his stop, which satisfied his OCD. Descending the stairs towards the exit, he heard laughter coming from the platform. Young male laughter. He scurried to the gate on the far left, which let him through. The voices behind him were catching up, so he skipped down the last few steps to street level.</p>
+      <p>The final leg of his journey beckoned. He headed right out of the station, then another right on 10. Through sheets of rain, he could just about see his building about 150 meters ahead. Nearly there.</p>
+      <p>‘Alright, mate!’</p>
+      <p>Fuck. Gabe kept walking with his gaze fixed on the pavement until he sensed someone creep up beside him. A quick peek confirmed his worst fears. The acne scars. The bleached blond hair peeking out from underneath the hood.</p>
+      <p>‘I don’t think he wants to talk to us, Si,’ said another voice, this one approaching from the left.</p>
+      <p>‘Nothing to be scared of, mate,’ reassured Si, wrapping his arm around Gabe’s neck, who shrugged him off. ‘Oooh, bit touchy, ain’t he, Rick?’</p>
+      <p>Rick’s bulky figure trundled up alongside Gabe, boxing him in.</p>
+      <p>‘Come on, Gabrielle, we just wanna chat,’ said Rick, catching his breath.</p>
+      <p>Gabe didn’t respond.</p>
+      <p>‘What you got for us?’ asked Si, grabbing at his bag.</p>
+      <p>‘Sounds like bottles,’ suggested Rick. ‘Where’s our invitation?’</p>
+      <p>‘Listen, fellas, I’m not in the mood. I’ve had a shit day at work. Leave me alone,’ Gabe pleaded, but his request drifted into the night air.</p>
+      <p>‘We’re keeping you company, Gaby,’ explained Si. ‘Make sure you get home all right. Never know what dangers might be lurking about.’</p>
+      <p>‘Exactly. Like our civic duty,’ echoed Rick, reaching for Gabe’s bag.</p>
+      <p>‘Piss off!’ yelled Gabe, but Rick had unzipped it, and two pint bottles of Tennent’s spilled onto the pavement. Gabe reached down, but he only recovered one before Si snatched the other.</p>
+      <p>‘Give us that back!’</p>
+      <p>Si held the bottle out to him but recoiled when Gabe lunged for it.</p>
+      <p>Rick took advantage of Gabe’s distraction, snatching the other bottle out of his hand. Gabe tried to retrieve it, but he slipped and lost his balance. A follow-up kick to his backside sent him stumbling onto the road and crashing to the tarmac.</p>
+      <p>‘Cheers!’ yelled Si as he ran back toward the station, followed by a lumbering Rick.</p>
+      <p>Gabe crawled over to the path and sat on the curb. His jeans were soaked. For fuck’s sake, they were torn at the knees, too. But there was no point indulging in self-pity. Or expecting help. Even if anyone had witnessed what happened, they wouldn’t get involved. Nor would Gabe, in fairness, in their position. He grabbed hold of the lamppost and pulled himself up, pausing until the street stopped spinning.</p>
+      <p>The lock on his building’s front door was stiff, but it gave in after he jiggled the key for a few seconds. The hall light flickered and died, so he trudged up to the second floor in darkness, using the handrail as both a guide and support. Just as well his jeans were black; his neighbours wouldn’t notice the stains from whatever had mixed with the rainwater running along the street. A hint of battered cod suggested it came from the local chippy.</p>
+      <p>After letting himself into his studio, he dumped his soaking windbreaker on the ground and headed straight into the bathroom. Avoiding the face peering back at him in the mirror, he opened the cabinet and rotated pill bottles so he could read the labels. Not paracetamol. Nor Ritalin. Ah, there it was.</p>
+      <p>Mushroom supplements, according to the label. Strictly that was true, but they weren’t the kind of mushrooms you find in a supermarket or health food shop. A former colleague had championed psilocybin as the cure for a broad range of ailments, so Gabe had ordered a batch to alleviate his OCD. But a microdose wouldn’t cut it tonight, so he self-prescribed a macrodose, popping four capsules into his mouth and washing them down with a handful of tap water. Then he wandered into the lounge, collapsed on the couch, and waited for the trip to begin.</p>
+      <p class="break" aria-hidden="true">*</p>
+      <p>Gabe was roused by a shiver coursing through his body. He should have peeled off his jeans when he got in. And closed the window. The drumming of the rain made the room feel even chillier. But more importantly, he was sober. Why? The latest order arrived a couple of weeks ago, so the powder should still be potent. His head fell back against the couch as he contemplated another sleepless night.</p>
+      <p>‘Morning, dickhead.’</p>
+      <p>What the fuck?</p>
+      <p>‘Ouch!’ yelled Gabe as the skin tightened around his right wrist. He sprang up and scanned the room, the only light coming from the flashing neon sign above the strip club a few doors down. One of the few industries to have escaped the fourth industrial revolution unscathed. The novelty of robots spinning on poles faded quicker than the real deal’s interest when she realised you were drinking soda water. If human input determined future proofness, strippers would never be out of a job.</p>
+      <p>‘Still a soft lad, I see.’</p>
+      <p>That voice. It sounded familiar. But Gabe hadn’t heard it for a while. A face emerged from the darkness and faded again. It resembled his own, just ten years younger. Gabe’s brain was working slower than usual, but it started connecting the dots. His age. His likeness. Hold on… Gabe scrambled for the light switch. Breathing heavily, he flicked it.</p>
+      <p>‘Shit! No. Wait. What the fuck is going on here?’</p>
+      <p>He edged his way around to the front of the couch for a better view, holding a trembling arm aloft as if to protect himself. A bunch of emotions surged from his chest. Fear because he didn’t believe in ghosts. Confusion, as his brain tried to process the situation. Sadness that had always been present, only deeper.</p>
+      <p>Gabe’s breath shortened. The last thing he needed was any sudden movement, but then the kid sat forward. Gabe stumbled into the coffee table, knocking empty beer cans and a half-eaten chicken Kung Pao onto the floor, and landed among the debris.</p>
+      <p>‘Clumsy fucker.’</p>
+      <p>Gabe propped himself up on his elbows. He shivered, more from anxiety or the chill, he wasn’t sure.</p>
+      <p>‘What. Where…where did you come from?’</p>
+      <p>‘It’s quite simple, really. I’m a sensory echo projected from an image that you stored in the back of that useless brain of yours. Packed away for a lifetime. Don’t worry, no offence taken. But that big old hit of magic mushrooms you took earlier, it broke through the crap swimming around in your head, and here I am. Hope that wasn’t too technical for you.’</p>
+      <p>A tear ran down Gabe’s cheek.</p>
+      <p>‘Give over ya blouse. Didn’t want you crying back then, don’t want it now.’</p>
+      <p>Gabe sniffed.</p>
+      <p>‘I never got to say goodbye, Fil.’</p>
+      <p>‘I know, bruv, but that wasn’t your fault. Wasn’t anyone’s fault. Apart from that drunken burb prick.’</p>
+      <p>‘Still can’t believe the feds let him off with a caution.’</p>
+      <p>‘Different set of rules for those fortunate enough to be born in the burbs. Smoky lives are worth less, apparently. Or maybe worthless. Anyway, that’s another story. We need a word.’</p>
+      <p>Gabe picked himself up, brushing broccoli and rice off his t-shirt.</p>
+      <p>‘Bet Mum still does your laundry,’ teased Fil.</p>
+      <p>Gabe blushed as he perched on the end of the couch. After so long, it felt strange to keep his distance, but last time they were in a room together, Fil was lying in a coffin, looking serene for once in his 13 years of life. Gabe spent the rest of that day with his face buried in his mother’s thin black cardigan.</p>
+      <p>‘On my way out, I came across a recent memory. From earlier tonight, in fact. What the hell was that about?’</p>
+      <p>‘Been a while since I had a pip talk,’ countered Gabe, a wistful smile forming on his mouth.</p>
+      <p>‘Don’t be like that now, it was for your own good.’</p>
+      <p>‘The beatings too, yeah?’</p>
+      <p>‘You think I enjoyed having to slap you around?’</p>
+      <p>‘Yep!’</p>
+      <p>‘Ha! Well, maybe a bit, but I was also trying to toughen you up.’</p>
+      <p>‘It didn’t work.’</p>
+      <p>‘I can see that. But in my defence, I ran out of time.’</p>
+      <p>Gabe sighed.</p>
+      <p>‘But I was looking out for you in my own fucked-up way.’</p>
+      <p>He swallowed hard.</p>
+      <p>‘I know, bruv.’</p>
+      <p>‘Anyway, I’ve been given a second chance, and I don’t intend to pass it up.’</p>
+      <p>‘What does that mean?’ asked Gabe, his eyes widening.</p>
+      <p>‘We’re popping out.’</p>
+      <p>‘But it’s pissing…’</p>
+      <p>Fil’s glare put an end to Gabe’s protest. Ever the compliant younger sibling, he shook the excess water off his coat and slipped his arms into the damp sleeves.</p>
+      <p>‘So where we off to?’</p>
+      <p>‘You’ll see,’ replied Fil, pointing towards the front door.</p>
+      <p>As they made their way downstairs, a bolt of lightning lit up the graffiti-lined hall, followed by a roll of thunder. Gabe ducked in case any plaster peeled off the ceiling, but Fil didn’t flinch. When they exited the building, the rain was bouncing off the pavement. Before Gabe could complain, a nudge in the back propelled him forward.</p>
+      <p>‘Hold on a sec,’ he said, pausing. ‘If you’re only half real, how can…’</p>
+      <p>‘Knock it off!’ warned Fil as he brushed past and headed for the station. Gabe jogged after him to catch up.</p>
+      <p>‘Are you visible to anyone else?’</p>
+      <p>‘No.’</p>
+      <p>‘And do you feel the cold?’</p>
+      <p>‘Christ on a bike! Still full of questions. Give it a break, please, mate.’</p>
+      <p>Gabe did as he was told.</p>
+      <p>‘Stop here,’ ordered Fil, dragging Gabe into the doorway of a tattoo parlor with a cluster of ripe red cherries emblazoned across its black blinds.</p>
+      <p>‘So here’s the plan,’ Fil whispered. ‘You’re going to get paid for the beers those kids nicked off you.’</p>
+      <p>‘Oh, for fuck’s sake.’</p>
+      <p>Gabe backed off, but Fil grabbed a handful of his T-shirt and dragged him back.</p>
+      <p>‘This is the final stage of your training. If you deal with them, my work will be done. No more pip talks.’</p>
+      <p>Gabe looked away.</p>
+      <p>‘Come on, mate,’ coaxed Fil, feinting a right hook to Gabe’s ribs, which he twisted to evade.</p>
+      <p>‘OK,’ conceded Gabe, shaking his head. The last thing he wanted to do was disappoint Fil, a sentiment that hadn’t faded over the years.</p>
+      <p>They continued towards the station, pausing at the left-hand turn just before the entrance, which led to an alley running between ramshackle tenements. Fil dashed over to a skip and ducked behind it. He peered around the edge and then beckoned Gabe to follow him.</p>
+      <p>‘They’re sitting on the steps of the old knocking shop. Did you see ‘em?’</p>
+      <p>Gabe nodded.</p>
+      <p>‘So, what’s your plan?’</p>
+      <p>Gabe stared at Fil.</p>
+      <p>‘I’m not coming up with a plan for you.’</p>
+      <p>Gabe huffed.</p>
+      <p>‘I guess I’ll walk up to them and ask them to pay for the bottles.’</p>
+      <p>‘Okay,’ replied Fil, nodding. ‘So where’s your cap?’</p>
+      <p>‘I haven’t got a…’ Gabe trailed off as his brother’s sarcasm registered.</p>
+      <p>‘Here’s what you do. Go down there and demand the money for the fucking beers,’ instructed Fil. ‘And if the twats refuse, tell them the tooth fairy will be working overtime.’</p>
+      <p>‘Huh?’</p>
+      <p>‘You’ll start knocking out teeth.’</p>
+      <p>Gabe smirked.</p>
+      <p>‘Ha! Like that one?’</p>
+      <p>Fil grabbed the back of Gabe’s neck, pulling him forward until their foreheads touched.</p>
+      <p>‘Mate, you’ve got to stand up for yourself. Otherwise, people are going to walk all over you for the rest of your life. And the nastier the person, the quicker they spot your weaknesses and take advantage of them. You deserve better, bro’</p>
+      <p>Gabe hugged Fil.</p>
+      <p>‘OK. I’m ready.’</p>
+      <p>That wasn’t true, but Fil was right. He always got pushed around. Bullies when he was in school. Deadbeat customers in the shop. And lowlifes stalking his route home. Time to put a stop to that. Maybe, to learn to defend himself, he had to do something erratic. Something out of character. So he stood tall, pulled up his hood and took a deep breath. Then he strode down the alley.</p>
+      <p class="break" aria-hidden="true">*</p>
+      <p>Gabe woke the next morning sprawled on the couch, covered by a duvet. Outside, another grey day was dawning, but it wasn’t raining yet. As he stretched, his muscles ached, even parts of his body which hadn’t taken any blows. To make matters worse, his left eyelid wouldn’t open. At least the cut on his lip had stopped bleeding, and the swelling had subsided thanks to the defrosted bag of peas lying on the floor.</p>
+      <p>When he sat up, he noticed two crumpled, bloodstained notes sitting on the coffee table. The battle had swung back and forth, and Gabe surprised himself by landing a few heavy shots, but when his adversaries got the upper hand, a well-timed intervention from Fil wielding a stray brick settled the matter. Now he had to decide how he’d spend the money. Probably on beer. But then a better idea struck him.</p>
+      <p>‘Bruv, you know what? I’m going to stick the cash on the bathroom mirror. That way, I’ll see it every morning when I brush my teeth. It’ll be like a reminder. What do you reckon?’</p>
+      <p>No response. Gabe sat up and looked around, but the flat was empty. Had he been tripping all along? Was Fil’s reappearance a fucked-up illusion? The confusion caused his head to throb. Or was that concussion? Either way, lying back down offered some relief.</p>
+      <p>Hold on, his forearm was still scarred from the Chinese burn. But it wasn’t. When he rolled up his sleeve, the skin around his wrist was the same shade of pale tan as the rest of his arm. A tear trickled down his left cheek.</p>
+      <p>‘Knock it off!’ Not Fil’s voice this time. His own.</p>
+      <p>Gabe felt better after dozing for a while, so he got up and grabbed the cash. He needed Sellotape or something. His eyes settled on two posters: Kurt would have to make way because Ziggy was staying put. After removing the Blue Tac, he staggered into the bathroom and took a piss. But as he washed his hands, he froze. Staring back at him was a message scrawled across the mirror in toothpaste.</p>
+      <p>‘Don’t overthink it!’</p>
+    </article>
+
+  </main>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "../Pulp,%20Faith%20%26%20Truth/vendor/three.module.js",
+    "three/addons/": "../Pulp,%20Faith%20%26%20Truth/vendor/jsm/"
+  }
+}
+</script>
+<script type="module" src="city.js"></script>
+</body>
+</html>
