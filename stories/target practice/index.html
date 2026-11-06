@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>target practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --line: 14px;          /* the abstract's line spacing */
+    --rule: 28px;          /* notebook rules, on every second typed line */
+    --lip: 40px;           /* how much of the slab shows before it is pulled up */
+    --margin-x: 64px;      /* the notebook's red margin line */
+    --paper: #fdfdfb;
+    --typed: #2c2b29;
+    --type: "Cutive Mono", "Courier New", Courier, monospace;
+    --concrete: #a7a49d;
+    --wall-ink: #100f0e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--concrete); }
+  body { overflow-x: hidden; }
+
+  /* Keeps the slab's perspective from changing the page's scroll length. */
+  .stage { overflow: clip; }
+
+  /* ---------- notebook paper ---------- */
+
+  .paper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 96px 40px 124px calc(var(--margin-x) + 32px);
+    padding-top: round(down, 20vh, var(--rule));
+    color: var(--typed);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(90deg,
+        transparent calc(var(--margin-x) - 1px),
+        rgba(214, 96, 96, 0.07) calc(var(--margin-x) - 1px),
+        rgba(214, 96, 96, 0.07) var(--margin-x),
+        transparent var(--margin-x)),
+      repeating-linear-gradient(180deg,
+        transparent 0,
+        transparent calc(var(--rule) - 1px),
+        rgba(92, 136, 186, 0.055) calc(var(--rule) - 1px),
+        rgba(92, 136, 186, 0.055) var(--rule));
+  }
+
+  .sheet {
+    display: grid;
+    grid-template-columns: auto minmax(0, 17.5rem);
+    gap: 40px clamp(3.5rem, 8vw, 8rem);
+    align-items: start;
+  }
+
+  .photos {
+    display: grid;
+    gap: 20px;
+    width: clamp(220px, min(30vw, calc((100vh - 230px) / 2 * 1.45)), 460px);
+  }
+
+  .photos img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .abstract {
+    position: relative;
+    top: 2px;              /* drops the typed baselines onto the printed rules */
+    font-family: var(--type);
+    font-size: 10px;
+    line-height: var(--line);
+  }
+
+  .abstract h1 {
+    font: inherit;
+    margin-bottom: var(--line);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .signed { margin-top: var(--line); }
+
+  /* cracks.js sets each letter separately so the ribbon inks a little unevenly. */
+  .w { display: inline-block; white-space: nowrap; }
+  .c { display: inline-block; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Once the wall has struck the top, the paper stays behind it, only showing in the rebound. */
+  .stage.open .paper {
+    position: fixed;
+    inset: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ---------- concrete slab ---------- */
+
+  /* Down, and waiting to be pulled: it floats over the page instead of adding to its length. */
+  .slab.closed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(calc(100vh - var(--lip)));
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .slab.closed.grabbed { cursor: grabbing; }
+
+  /* A quiet prompt on the paper, riding just above the slab's top face. */
+  .prompt {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 12px;
+    padding: 6px 14px;
+    translate: -50% calc(var(--face, 0px) * -1);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font: 11px/1 var(--type);
+    letter-spacing: 0.16em;
+    color: var(--typed);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    z-index: 1;
+  }
+
+  .prompt::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    margin-top: 4px;
+    border-left: 1px solid currentColor;
+    border-top: 1px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .slab.closed:not(.lifted):not(.reading) .prompt {
+    pointer-events: auto;   /* part of the slab: pressing here grabs it too */
+    opacity: 0.72;
+    animation: prompt-breathe 3.8s ease-in-out 1s infinite;
+  }
+
+  @keyframes prompt-breathe {
+    0%, 100% { opacity: 0.72; }
+    50% { opacity: 0.42; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slab.closed:not(.lifted):not(.reading) .prompt { animation: none; }
+  }
+
+  .slab {
+    position: relative;
+    z-index: 2;
+    transform-origin: 50% 0;
+    background-color: var(--concrete);
+    border-top: 1px solid rgba(255, 255, 255, 0.32);
+  }
+
+  /* The slab's top face, seen in perspective; it closes as the slab reaches the top. */
+  .slab::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: var(--face, 0px);
+    background:
+      linear-gradient(to top, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.07)),
+      var(--grain, none) #b2afa8;
+    clip-path: polygon(3.5% 0, 96.5% 0, 100% 100%, 0 100%);
+  }
+
+  /* The shadow it pushes ahead of itself across the paper. */
+  .slab::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 90px;
+    transform: translateY(calc(var(--face, 0px) * -1));
+    background: linear-gradient(to top,
+      rgba(30, 28, 24, 0.13),
+      rgba(30, 28, 24, 0.05) 35%,
+      rgba(30, 28, 24, 0.012) 70%,
+      rgba(30, 28, 24, 0));
+    pointer-events: none;
+  }
+
+  .cracks {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .cracks canvas {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    display: block;
+  }
+
+  .wall {
+    position: relative;
+    width: min(100%, calc(33rem + 48px));
+    margin: 0 auto;
+    padding: 30vh 24px 40vh;
+    color: var(--wall-ink);
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .wall h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .byline {
+    margin: 0.6rem 0 clamp(4rem, 14vh, 8rem);
+    font-size: 0.9375rem;
+  }
+
+  .wall p + p:not(.byline) { margin-top: 1.9em; }
+
+  /* The deliberate blank spaces inside the story's paragraphs. */
+  .gap-join { white-space: nowrap; }   /* so a gap can never hide at the end of a line */
+  .gap {
+    display: inline-block;
+    width: min(var(--g, 10em), 42%);
+    height: 1px;
+  }
+
+  .dust {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  @media (max-width: 860px) {
+    :root { --margin-x: 22px; }
+    .paper { padding: 48px 28px 124px calc(var(--margin-x) + 22px); }
+    .sheet { grid-template-columns: minmax(0, 20rem); }
+    .abstract { max-width: 17.5rem; }
+    .photos { width: 100%; }
+    .wall { padding: 24vh 34px 40vh; }
+  }
+</style>
+</head>
+<body>
+
+  <main class="stage">
+  <section class="paper">
+    <div class="sheet">
+      <div class="photos">
+        <figure>
+          <img src="photo-front.jpg" width="788" height="553" alt="A black and white photograph of a young man and two young women in fur coats, smiling at the camera at night. The woman in the middle holds a gun; the one on the right holds a white stuffed animal to her cheek.">
+        </figure>
+        <figure>
+          <img src="photo-back.jpg" width="792" height="519" alt="The yellowed reverse of the same photograph, blank except for 1947 handwritten in black ink.">
+        </figure>
+      </div>
+
+      <div class="abstract">
+        <h1 data-typed>Abstract</h1>
+        <p data-typed>“target practice” is a piece of experimental prose inspired by a photograph I found at a flea market in Milan. The photo shows two girls and a boy in 1947. One girl holds a gun while the other holds a stuffed animal. I take the photograph home and invent a life for the girl with the gun. She spends her nights practising behind a coloured-pencil factory. She then comes home to a friend with whom she shares an unpleasant intimacy. I wanted to imagine a girl whose violence is not an act of self-defence, nor a response to something that has happened to her. She simply wants to become very good at shooting. The story plays with the expectation that female violence must have an explanation. The two girls are affectionate, jealous, petty and potentially cruel. I keep rearranging their lives according to what I want them to be. The photograph offers no answers, and I would be disappointed if it did.</p>
+        <p class="signed" data-typed>-Chiara</p>
+      </div>
+    </div>
+  </section>
+
+  <article class="slab">
+    <div class="cracks" aria-hidden="true"></div>
+    <div class="prompt">drag up</div>
+    <div class="wall">
+      <h2>target practice</h2>
+      <p class="byline">Chiara Trivella</p>
+
+      <p>I bought the girl with the gun on a Sunday, a couple of months ago when the heat was still insufferable in Milan. The boy and the other girl were included. The only thing written in the back of the photograph was “1947”, in black ink. I carried them home in a plastic bag with some cherries. The girl in the middle has a fur coat and a small, rather pleased smile. The one beside her is holding a stuffed animal up to her cheek but I can't really tell what kind. I keep calling it a rabbit anyway. <span class="gap-join"><span class="gap" style="--g:13em"></span> She</span> goes out after midnight; I know this because I can't imagine her doing anything interesting in daylight. She takes the gun and leaves the house very quietly, although her friend is awake and can hear everything. There is a coloured-pencil factory at the end of the road. Behind it, the ground is covered in pencil shavings, cigarette ends, bits of coloured wood that get stuck to the wet soles of her shoes. She goes there to practice every night. In the beginning she misses almost everything and gets so angry she bites the inside of her mouth multiple times. She then comes home to eat cold potatoes over the sink.</p>
+
+      <p>The first dead thing is a bird, I don't know what sort, something small enough to fit inside her glove. She carries it home because leaving it there would feel like admitting it was an accident. She puts it on the kitchen table. Her friend is eating breakfast and has to move her plate. There is a little blood on the tablecloth, no bigger than a coin. They stare at it for a while, then the girl with the rabbit says she doesn't want to hear about the factory ever again. <span class="gap-join"><span class="gap" style="--g:17em"></span> I</span> think she says this quite often. The gun girl has become unbearable. She talks about her hands at dinner. She wakes up with a sore shoulder and makes everybody look at it. Once she pulls back her sleeve in a café and shows her friend a bruise that is already going yellow. Her friend says it's lovely, darling, and continues eating her cake. They don't speak for the rest of the afternoon. <span class="gap-join"><span class="gap" style="--g:9em"></span> At</span> night I imagine them sharing a bed. The rabbit is between them, its face worn almost smooth. The girl with the gun has started to dislike it because she says it smells like a wet dog. Her friend puts it inside her nightdress so she won't touch it. This makes the gun girl furious in a way I find difficult to explain. I have given her a gun and now she is jealous of a toy. She waits until the other girl is asleep, pulls it out very slowly and holds it by one ear. I can't decide what she does next but in the morning the rabbit is back where it belongs.</p>
+
+      <p>I look at the photograph again. Both girls are smiling. The one with the rabbit looks as if she has just heard a wonderful joke. Perhaps she is the cruel one, so cruel to the point that she makes her friend go out every night and asks her to bring back proof. I keep changing their personalities, as it doesn't seem to bother them.</p>
+
+      <p>Eventually the girl with the gun becomes very good at shooting. She goes to the factory even when it rains or when she’s feeling sick. The coloured dust turns to paste under her shoes, there are little green and violet streaks on the hem of her coat, and once she comes home with blood inside her cuff. Her friend holds her wrist over the sink. I imagine the rabbit on the draining board, watching the water run pink around the plug. The girl with the gun has a split lip which she keeps touching it with her tongue while her friend tries to wash the sleeve. I would like her to have a favourite gun. I would like her to have bought it herself, perhaps after saving money that was meant for a new coat. The boy in the photograph worries me on the contrary. His eyes are very wide and he's holding something I can't make out.</p>
+
+      <p>Last night I imagined her coming back from the factory without her coat. She sits on the bedroom floor with her stockings rolled down and won't tell her friend where she's left it. There is something under one of her fingernails. Her friend gets a sewing needle and tries to take it out. They are both very tired. The rabbit has fallen behind the bed and nobody picks it up. <span class="gap-join"><span class="gap" style="--g:14em"></span> Sometimes</span> I think the gun has nothing to do with it. She would have gone out at night anyway, even if she had nothing to carry. I imagine her coming home one morning with a handful of colored pencils stolen from the factory. She gives the pink one to her friend and keeps the others in the fridge. I don't know why, but I would be very upset if she turned out to be a nice person.</p>
+    </div>
+  </article>
+  </main>
+
+  <script src="cracks.js?v=7"></script>
+</body>
+</html>
