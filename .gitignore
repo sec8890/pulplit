@@ -1,2 +1,6 @@
 # Source manuscripts stay local; the page carries the text
 stories/gods of circularity/*.pdf
+stories/target practice.pdf
+
+# Social media files, not part of the site
+instagram/

@@ -140,8 +140,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 9px;
-    font: 11px/1 var(--type);
+    gap: 11px;
+    font: 14px/1 var(--type);
     letter-spacing: 0.16em;
     color: var(--typed);
     opacity: 0;
@@ -152,27 +152,31 @@
 
   .prompt::before {
     content: "";
-    width: 6px;
-    height: 6px;
-    margin-top: 4px;
-    border-left: 1px solid currentColor;
-    border-top: 1px solid currentColor;
+    width: 9px;
+    height: 9px;
+    margin-top: 6px;
+    border-left: 1.5px solid currentColor;
+    border-top: 1.5px solid currentColor;
     transform: rotate(45deg);
   }
 
   .slab.closed:not(.lifted):not(.reading) .prompt {
     pointer-events: auto;   /* part of the slab: pressing here grabs it too */
-    opacity: 0.72;
-    animation: prompt-breathe 3.8s ease-in-out 1s infinite;
+    opacity: 1;
   }
 
-  @keyframes prompt-breathe {
-    0%, 100% { opacity: 0.72; }
-    50% { opacity: 0.42; }
+  /* The chevron keeps nudging upward, showing the direction to pull. */
+  .slab.closed:not(.lifted):not(.reading) .prompt::before {
+    animation: prompt-nudge 1.9s ease-in-out infinite;
+  }
+
+  @keyframes prompt-nudge {
+    0%, 100% { transform: translateY(1px) rotate(45deg); }
+    50% { transform: translateY(-4px) rotate(45deg); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .slab.closed:not(.lifted):not(.reading) .prompt { animation: none; }
+    .slab.closed:not(.lifted):not(.reading) .prompt::before { animation: none; }
   }
 
   .slab {
